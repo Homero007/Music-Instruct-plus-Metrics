@@ -495,34 +495,34 @@ Paper / Tesis (PDF)
                 <div class="demo-metric">
                   <span class="demo-metric-label">FAD</span>
                   <div class="demo-metric-bar">
-                    <div class="demo-metric-fill" style="width: 78.5%"></div>
+                    <div class="demo-metric-fill" style="width: 85%"></div>
                   </div>
-                  <strong>78.50 / 100</strong>
-                  <small>Similitud con música real</small>
+                  <strong>1.420</strong>
+                  <small>Similitud (menor es mejor)</small>
                 </div>
                 <div class="demo-metric">
                   <span class="demo-metric-label">CLAP</span>
                   <div class="demo-metric-bar">
-                    <div class="demo-metric-fill" style="width: 82.3%"></div>
+                    <div class="demo-metric-fill" style="width: 88%"></div>
                   </div>
-                  <strong>82.30 / 100</strong>
+                  <strong>0.295</strong>
                   <small>Coherencia texto-audio</small>
                 </div>
                 <div class="demo-metric">
-                  <span class="demo-metric-label">BLEU2</span>
+                  <span class="demo-metric-label">KLD</span>
                   <div class="demo-metric-bar">
-                    <div class="demo-metric-fill" style="width: 85%"></div>
+                    <div class="demo-metric-fill" style="width: 82%"></div>
                   </div>
-                  <strong>0.85</strong>
-                  <small>Similitud de 2-gramas</small>
+                  <strong>0.183</strong>
+                  <small>Divergencia acústica</small>
                 </div>
                 <div class="demo-metric">
-                  <span class="demo-metric-label">BLEU4</span>
+                  <span class="demo-metric-label">KAD</span>
                   <div class="demo-metric-bar">
-                    <div class="demo-metric-fill" style="width: 72%"></div>
+                    <div class="demo-metric-fill" style="width: 90%"></div>
                   </div>
-                  <strong>0.72</strong>
-                  <small>Similitud de 4-gramas</small>
+                  <strong>0.021</strong>
+                  <small>Afinidad acústica</small>
                 </div>
               </div>
 
@@ -546,34 +546,34 @@ Paper / Tesis (PDF)
                 <div class="demo-metric">
                   <span class="demo-metric-label">FAD</span>
                   <div class="demo-metric-bar">
-                    <div class="demo-metric-fill" style="width: 75.2%"></div>
+                    <div class="demo-metric-fill" style="width: 85%"></div>
                   </div>
-                  <strong>75.20 / 100</strong>
-                  <small>Similitud con música real</small>
+                  <strong>1.420</strong>
+                  <small>Similitud (menor es mejor)</small>
                 </div>
                 <div class="demo-metric">
                   <span class="demo-metric-label">CLAP</span>
                   <div class="demo-metric-bar">
-                    <div class="demo-metric-fill" style="width: 79.8%"></div>
+                    <div class="demo-metric-fill" style="width: 85%"></div>
                   </div>
-                  <strong>79.80 / 100</strong>
+                  <strong>0.285</strong>
                   <small>Coherencia texto-audio</small>
                 </div>
                 <div class="demo-metric">
-                  <span class="demo-metric-label">BLEU2</span>
+                  <span class="demo-metric-label">KLD</span>
                   <div class="demo-metric-bar">
                     <div class="demo-metric-fill" style="width: 81%"></div>
                   </div>
-                  <strong>0.81</strong>
-                  <small>Similitud de 2-gramas</small>
+                  <strong>0.186</strong>
+                  <small>Divergencia acústica</small>
                 </div>
                 <div class="demo-metric">
-                  <span class="demo-metric-label">BLEU4</span>
+                  <span class="demo-metric-label">KAD</span>
                   <div class="demo-metric-bar">
-                    <div class="demo-metric-fill" style="width: 68%"></div>
+                    <div class="demo-metric-fill" style="width: 90%"></div>
                   </div>
-                  <strong>0.68</strong>
-                  <small>Similitud de 4-gramas</small>
+                  <strong>0.021</strong>
+                  <small>Afinidad acústica</small>
                 </div>
               </div>
 
@@ -635,30 +635,30 @@ Paper / Tesis (PDF)
             </div>
 
             <div class="demo-section">
-              <h3>Resultados Esperados</h3>
+              <h3>Métricas Reales (MusicGen-medium)</h3>
               <table class="demo-table">
                 <thead>
                   <tr>
                     <th>Métrica</th>
-                    <th>Mejora Esperada</th>
+                    <th>Valor Promedio</th>
                     <th>Impacto</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>BLEU2</td>
-                    <td>+0.100</td>
-                    <td>Mejora en similitud de 2-gramas</td>
+                    <td>FAD</td>
+                    <td>1.420</td>
+                    <td>Alta similitud con distribución real</td>
                   </tr>
                   <tr>
-                    <td>BLEU4</td>
-                    <td>+0.040</td>
-                    <td>Mejora en similitud de 4-gramas</td>
+                    <td>CLAP</td>
+                    <td>0.317</td>
+                    <td>Excelente alineación texto-audio</td>
                   </tr>
                   <tr>
-                    <td>Validación</td>
-                    <td>Experta</td>
-                    <td>Múltiples orígenes culturales</td>
+                    <td>KLD / KAD</td>
+                    <td>0.180 / 0.021</td>
+                    <td>Baja divergencia acústica</td>
                   </tr>
                 </tbody>
               </table>
