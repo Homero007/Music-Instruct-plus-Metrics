@@ -1,0 +1,149 @@
+% ============================================================
+%  SECCIÓN: Datos para la edición — modalidad, estandarización y datasets
+%  Formato IEEE (IEEEtran) — español
+%  Implementación del generador: scripts/build_edit_triplets.py
+% ============================================================
+
+\section{Datos para la Edición: Modalidad y Estandarización}
+\label{sec:edit:data}
+
+\subsection{El problema de modalidad}
+\label{sec:edit:data:modalidad}
+
+El objetivo inicial menciona \emph{``obtener música en formato MIDI''} y trabajar
+con \emph{tokens} de entrada/salida, mientras que la metodología opera sobre WAV,
+separación en \textit{stems} (Demucs), tokens neuronales (EnCodec),
+\textit{captions} ricos y ternas \{audio fuente, instrucción, audio objetivo\}.
+Esta discrepancia no es menor: el corpus podría ser MIDI, audio, \textit{stems},
+MusicCaps, MoisesDB, datos propios o una mezcla, y \textbf{cómo se obtiene el
+audio objetivo cambia las conclusiones, los sesgos y la dificultad} de la tarea
+supervisada de edición.
+
+\subsection{Resolución: registro canónico multimodal}
+\label{sec:edit:data:canonico}
+
+El MIDI es ideal para edición \emph{simbólica/estructural} (transponer, cambiar
+tempo, añadir o quitar una línea melódica) y para tokenizar con
+\textit{transformers}, pero \textbf{no puede representar timbre ni mezcla}.
+Como las métricas de edición de preservación y de éxito de operación
+(Sección~\ref{sec:edit}) viven en el dominio acústico, una estandarización
+\emph{sólo} a MIDI descartaría justamente lo que la tarea debe preservar.
+
+Por ello se estandariza cada fuente, sea cual sea su modalidad nativa, a un
+\textbf{registro canónico} que conserva ambas representaciones y se elige según
+la operación:
+\begin{itemize}
+  \item \textbf{WAV canónico}: 32\,kHz, mono, 10\,s (320\,000 muestras),
+        normalizado en pico. Base de FAD, CLAP y mezcla.
+  \item \textbf{Stems} (Demucs \texttt{htdemucs}): batería, bajo, voz, otros.
+        Base de la preservación por capas y de las operaciones de stems.
+  \item \textbf{MIDI simbólico} (transcripción \textit{basic-pitch}): soporte de
+        las ediciones estructurales y de la tokenización para el transformer.
+  \item \textbf{Tokens neuronales} (EnCodec 32\,kHz): representación acústica
+        para el modelo generativo/editor.
+  \item \textbf{Caption}: descripción textual (fuente de instrucciones derivadas).
+\end{itemize}
+La operación determina la modalidad: las ediciones acústicas (timbre, mezcla,
+quitar/aislar un instrumento) usan WAV/stems/EnCodec; las simbólicas
+(tempo, transposición, estructura) pueden resolverse sobre MIDI. El audio
+objetivo es siempre la referencia de las métricas.
+
+\subsection{Datasets candidatos}
+\label{sec:edit:data:datasets}
+
+La Tabla~\ref{tab:edit-datasets} resume las fuentes consideradas con sus
+características relevantes para la edición. La presencia de \textit{stems} reales
+(MoisesDB) frente a \textit{stems} estimados (Demucs sobre mezclas) es el factor
+que más afecta la dificultad y el sesgo del banco.
+
+\begin{table*}[t]
+  \caption{Datasets candidatos para el banco de edición}
+  \label{tab:edit-datasets}
+  \centering
+  \small
+  \begin{tabular}{lllrlcll}
+    \hline
+    \textbf{Fuente} & \textbf{Licencia} & \textbf{Modalidad} & \textbf{\#Pistas} &
+    \textbf{Dur.} & \textbf{Stems} & \textbf{Formato/SR} & \textbf{Géneros} \\
+    \hline
+    MusicCaps (testset propio) & CC (AudioSet) & audio   & 100  & 10\,s  & estimados & WAV/32\,kHz & 10 \\
+    MoisesDB                   & investigación & audio+stems & 240  & variable & \textbf{reales} & WAV/44.1\,kHz & múltiples \\
+    MTG-Jamendo                & CC            & audio   & 55k  & full   & estimados & MP3/44.1\,kHz & 95 \\
+    Datos propios (ternas)     & derivada      & audio   & --   & 10\,s  & estimados & WAV/32\,kHz & hereda fuente \\
+    \hline
+  \end{tabular}
+  \smallskip\\
+  \footnotesize{Todas se normalizan al registro canónico
+  (Sección~\ref{sec:edit:data:canonico}) antes de construir ternas. MoisesDB
+  aporta \textit{stems} reales (objetivos de mayor fidelidad); el resto usa
+  \textit{stems} estimados con Demucs (sesgo documentado).}
+\end{table*}
+
+\subsection{Construcción de instrucciones y objetivos}
+\label{sec:edit:data:construccion}
+
+El generador (\texttt{scripts/build\_edit\_triplets.py}) produce ternas con
+objetivos \textbf{controlados y trazables}; cada terna registra su método de
+construcción (\texttt{target\_method}). Dos familias:
+
+\begin{enumerate}
+  \item \textbf{Operaciones de DSP} (objetivo determinista, sin separación):
+        \textit{slow\_down}/\textit{speed\_up} (\textit{time-stretch} que
+        preserva el tono), \textit{quieter} (ganancia $-6$\,dB),
+        \textit{fade\_out} (fundido de salida). El atributo objetivo (BPM, RMS o
+        energía de cola) es medible y permite cuantificar el \emph{éxito de
+        operación} (Ec.~\ref{eq:opsuccess}).
+  \item \textbf{Operaciones de \textit{stems}} (requieren Demucs):
+        \textit{remove\_drums}, \textit{remove\_vocals} (objetivo = mezcla sin la
+        capa), \textit{isolate\_bass} (objetivo = solo el bajo). La preservación
+        se mide únicamente sobre las capas no editadas.
+\end{enumerate}
+
+\paragraph{Instrucciones} Se construyen por plantillas en español asociadas a
+cada operación (p.\,ej.\ \textit{``quita la batería''}, \textit{``haz el tempo
+más lento''}), con varias variantes por operación para diversidad léxica.
+
+\paragraph{Objetivos} Se sintetizan a partir de la fuente por el método de la
+operación. Esto los hace reproducibles y de objetivo conocido, pero introduce un
+\textbf{sesgo de objetivos sintéticos}: no son ediciones humanas reales. Por eso
+se recomienda complementar con \textit{stems} reales (MoisesDB) y, cuando existan,
+pares reales fuente--objetivo.
+
+\subsection{Integración de MoisesDB: stems reales}
+\label{sec:edit:data:moisesdb}
+
+Para reducir el sesgo de \textit{stems} estimados, el generador integra
+\textbf{MoisesDB} (240 canciones con separación multipista real). El adaptador
+(\texttt{scripts/moisesdb\_adapter.py}) lee la estructura cruda del dataset
+(una subcarpeta por categoría de instrumento, con uno o más \textit{sub-stems}
+que se suman), mapea las categorías finas de MoisesDB a la taxonomía de
+operaciones \{batería, bajo, voz, otros\} y normaliza al registro canónico
+(32\,kHz mono, 10\,s). Con \texttt{-{}-moisesdb}, las operaciones de \textit{stems}
+construyen el objetivo a partir de capas \textbf{reales} (p.\,ej.\
+\textit{quitar batería} = mezcla menos la pista real de batería), no de
+separaciones de Demucs.
+
+Cada terna registra el origen de sus \textit{stems} en la columna
+\texttt{stems\_origin} (\texttt{real} con MoisesDB, \texttt{estimated} con
+Demucs, \texttt{n/a} para DSP), de modo que el sesgo de construcción queda
+\textbf{trazable a nivel de muestra} y se puede analizar su efecto en los
+resultados (separando, por ejemplo, el rendimiento con \textit{stems} reales del
+obtenido con \textit{stems} estimados).
+
+\subsection{Criterios de exclusión}
+\label{sec:edit:data:exclusion}
+
+\begin{itemize}
+  \item Operaciones de \textit{stems} cuya capa objetivo tiene energía
+        despreciable en la fuente (p.\,ej.\ \textit{quitar la voz} en una pista
+        instrumental): la operación no es aplicable y se descarta.
+  \item Ternas cuyo objetivo no difiere del original por encima de un umbral
+        (la operación no produjo un cambio medible).
+  \item Fuentes que no se normalizan correctamente a 32\,kHz mono / 320\,000
+        muestras.
+  \item \textit{Time-stretch} con factores que degradan artefactos por encima de
+        un umbral perceptual (control de calidad del objetivo).
+\end{itemize}
+
+% Implementación del generador: scripts/build_edit_triplets.py
+% Métricas: hybrid_music_engine/new_metrics/edit_benchmark.py

@@ -1,0 +1,1241 @@
+{
+  "metric": "clap_score",
+  "level": "clip",
+  "note": "CLAP-score se mide por clip → las observaciones son independientes a nivel de muestra y las pruebas no-paramétricas son válidas.",
+  "test": "Kruskal-Wallis + Dunn post-hoc (Bonferroni)",
+  "alpha": 0.05,
+  "overall": {
+    "n_models": 4,
+    "models": [
+      "MusicGen-medium",
+      "MusicGen-small",
+      "AudioLDM2",
+      "Stable-Audio-Open"
+    ],
+    "group_sizes": {
+      "MusicGen-medium": 100,
+      "MusicGen-small": 100,
+      "AudioLDM2": 100,
+      "Stable-Audio-Open": 100
+    },
+    "descriptive": {
+      "MusicGen-medium": {
+        "n": 100,
+        "mean": 0.31783826,
+        "std": 0.05069278843171109,
+        "median": 0.3143605,
+        "ci_95": [
+          0.30777971098706147,
+          0.3278968090129385
+        ]
+      },
+      "MusicGen-small": {
+        "n": 100,
+        "mean": 0.27316162,
+        "std": 0.06534149320963091,
+        "median": 0.275092,
+        "ci_95": [
+          0.26019645015314813,
+          0.28612678984685186
+        ]
+      },
+      "AudioLDM2": {
+        "n": 100,
+        "mean": 0.22063053,
+        "std": 0.06796026657688381,
+        "median": 0.2188045,
+        "ci_95": [
+          0.2071457387023815,
+          0.23411532129761847
+        ]
+      },
+      "Stable-Audio-Open": {
+        "n": 100,
+        "mean": 0.21016453,
+        "std": 0.06028784003285715,
+        "median": 0.21854099999999999,
+        "ci_95": [
+          0.19820211458322745,
+          0.22212694541677253
+        ]
+      }
+    },
+    "h_statistic": 141.73988528678296,
+    "p_value": 1.593284445494206e-30,
+    "eta_squared": 0.35035324567369436,
+    "effect_size_label": "grande",
+    "significant": true,
+    "dunn": [
+      {
+        "model_a": "MusicGen-medium",
+        "model_b": "MusicGen-small",
+        "z": 4.198080074179974,
+        "p_value": 2.6918745523074605e-05,
+        "p_bonferroni": 0.00016151247313844763,
+        "significant": true
+      },
+      {
+        "model_a": "MusicGen-medium",
+        "model_b": "AudioLDM2",
+        "z": 9.454242684538759,
+        "p_value": 0.0,
+        "p_bonferroni": 0.0,
+        "significant": true
+      },
+      {
+        "model_a": "MusicGen-medium",
+        "model_b": "Stable-Audio-Open",
+        "z": 10.437708995622879,
+        "p_value": 0.0,
+        "p_bonferroni": 0.0,
+        "significant": true
+      },
+      {
+        "model_a": "MusicGen-small",
+        "model_b": "AudioLDM2",
+        "z": 5.2561626103587855,
+        "p_value": 1.4709224438469448e-07,
+        "p_bonferroni": 8.825534663081669e-07,
+        "significant": true
+      },
+      {
+        "model_a": "MusicGen-small",
+        "model_b": "Stable-Audio-Open",
+        "z": 6.239628921442904,
+        "p_value": 4.3861003717893254e-10,
+        "p_bonferroni": 2.6316602230735953e-09,
+        "significant": true
+      },
+      {
+        "model_a": "AudioLDM2",
+        "model_b": "Stable-Audio-Open",
+        "z": 0.9834663110841186,
+        "p_value": 0.3253779880228058,
+        "p_bonferroni": 1.0,
+        "significant": false
+      }
+    ]
+  },
+  "by_genre": {
+    "ambient": {
+      "n_models": 4,
+      "models": [
+        "MusicGen-medium",
+        "MusicGen-small",
+        "AudioLDM2",
+        "Stable-Audio-Open"
+      ],
+      "group_sizes": {
+        "MusicGen-medium": 10,
+        "MusicGen-small": 10,
+        "AudioLDM2": 10,
+        "Stable-Audio-Open": 10
+      },
+      "descriptive": {
+        "MusicGen-medium": {
+          "n": 10,
+          "mean": 0.35001920000000003,
+          "std": 0.04786649156606784,
+          "median": 0.3585555,
+          "ci_95": [
+            0.31577757469362683,
+            0.38426082530637323
+          ]
+        },
+        "MusicGen-small": {
+          "n": 10,
+          "mean": 0.2812037,
+          "std": 0.048455192463530444,
+          "median": 0.2719435,
+          "ci_95": [
+            0.2465409434410758,
+            0.3158664565589242
+          ]
+        },
+        "AudioLDM2": {
+          "n": 10,
+          "mean": 0.2241262,
+          "std": 0.06338928877061523,
+          "median": 0.21303650000000002,
+          "ci_95": [
+            0.1787802345133717,
+            0.26947216548662833
+          ]
+        },
+        "Stable-Audio-Open": {
+          "n": 10,
+          "mean": 0.2254387,
+          "std": 0.048138957898636175,
+          "median": 0.225876,
+          "ci_95": [
+            0.19100216402097953,
+            0.25987523597902046
+          ]
+        }
+      },
+      "h_statistic": 19.05512195121949,
+      "p_value": 0.0002663168845258596,
+      "eta_squared": 0.44597560975609696,
+      "effect_size_label": "grande",
+      "significant": true,
+      "dunn": [
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "MusicGen-small",
+          "z": 2.1231304545009166,
+          "p_value": 0.033742921651228164,
+          "p_bonferroni": 0.20245752990736898,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "AudioLDM2",
+          "z": 3.7489510728124293,
+          "p_value": 0.00017757572135512767,
+          "p_bonferroni": 0.001065454328130766,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "Stable-Audio-Open",
+          "z": 3.76807837420433,
+          "p_value": 0.00016450905733145227,
+          "p_bonferroni": 0.0009870543439887136,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "AudioLDM2",
+          "z": 1.6258206183115125,
+          "p_value": 0.10398782087548875,
+          "p_bonferroni": 0.6239269252529325,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "Stable-Audio-Open",
+          "z": 1.6449479197034127,
+          "p_value": 0.09998055162155972,
+          "p_bonferroni": 0.5998833097293583,
+          "significant": false
+        },
+        {
+          "model_a": "AudioLDM2",
+          "model_b": "Stable-Audio-Open",
+          "z": 0.01912730139190008,
+          "p_value": 0.9847395520503719,
+          "p_bonferroni": 1.0,
+          "significant": false
+        }
+      ]
+    },
+    "classical": {
+      "n_models": 4,
+      "models": [
+        "MusicGen-medium",
+        "MusicGen-small",
+        "AudioLDM2",
+        "Stable-Audio-Open"
+      ],
+      "group_sizes": {
+        "MusicGen-medium": 10,
+        "MusicGen-small": 10,
+        "AudioLDM2": 10,
+        "Stable-Audio-Open": 10
+      },
+      "descriptive": {
+        "MusicGen-medium": {
+          "n": 10,
+          "mean": 0.2947306,
+          "std": 0.032651756461857355,
+          "median": 0.29314799999999996,
+          "ci_95": [
+            0.2713729405229381,
+            0.31808825947706193
+          ]
+        },
+        "MusicGen-small": {
+          "n": 10,
+          "mean": 0.28958219999999996,
+          "std": 0.055685643387780946,
+          "median": 0.310057,
+          "ci_95": [
+            0.24974709043913118,
+            0.32941730956086873
+          ]
+        },
+        "AudioLDM2": {
+          "n": 10,
+          "mean": 0.1719052,
+          "std": 0.06313314963155252,
+          "median": 0.18939499999999998,
+          "ci_95": [
+            0.12674246541538958,
+            0.21706793458461043
+          ]
+        },
+        "Stable-Audio-Open": {
+          "n": 10,
+          "mean": 0.15934339999999997,
+          "std": 0.03540342800476939,
+          "median": 0.1517555,
+          "ci_95": [
+            0.13401731328175295,
+            0.18466948671824698
+          ]
+        }
+      },
+      "h_statistic": 25.087317073170766,
+      "p_value": 1.4804833071756589e-05,
+      "eta_squared": 0.6135365853658546,
+      "effect_size_label": "grande",
+      "significant": true,
+      "dunn": [
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "MusicGen-small",
+          "z": 0.01912730139190042,
+          "p_value": 0.9847395520503717,
+          "p_bonferroni": 1.0,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "AudioLDM2",
+          "z": 3.4429142505420267,
+          "p_value": 0.0005754817530356782,
+          "p_bonferroni": 0.003452890518214069,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "Stable-Audio-Open",
+          "z": 3.6533145658529285,
+          "p_value": 0.000258876762865512,
+          "p_bonferroni": 0.0015532605771930719,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "AudioLDM2",
+          "z": 3.4237869491501263,
+          "p_value": 0.0006175501546490381,
+          "p_bonferroni": 0.0037053009278942284,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "Stable-Audio-Open",
+          "z": 3.634187264461028,
+          "p_value": 0.00027885827404139363,
+          "p_bonferroni": 0.0016731496442483618,
+          "significant": true
+        },
+        {
+          "model_a": "AudioLDM2",
+          "model_b": "Stable-Audio-Open",
+          "z": 0.2104003153109019,
+          "p_value": 0.8333552465788061,
+          "p_bonferroni": 1.0,
+          "significant": false
+        }
+      ]
+    },
+    "electronic": {
+      "n_models": 4,
+      "models": [
+        "MusicGen-medium",
+        "MusicGen-small",
+        "AudioLDM2",
+        "Stable-Audio-Open"
+      ],
+      "group_sizes": {
+        "MusicGen-medium": 10,
+        "MusicGen-small": 10,
+        "AudioLDM2": 10,
+        "Stable-Audio-Open": 10
+      },
+      "descriptive": {
+        "MusicGen-medium": {
+          "n": 10,
+          "mean": 0.28425700000000004,
+          "std": 0.0361646834663629,
+          "median": 0.2901055,
+          "ci_95": [
+            0.25838634393009424,
+            0.31012765606990583
+          ]
+        },
+        "MusicGen-small": {
+          "n": 10,
+          "mean": 0.25746569999999996,
+          "std": 0.07006343950393973,
+          "median": 0.266326,
+          "ci_95": [
+            0.2073453346947988,
+            0.30758606530520116
+          ]
+        },
+        "AudioLDM2": {
+          "n": 10,
+          "mean": 0.2056929,
+          "std": 0.07062850211643393,
+          "median": 0.1991155,
+          "ci_95": [
+            0.1551683132526453,
+            0.25621748674735473
+          ]
+        },
+        "Stable-Audio-Open": {
+          "n": 10,
+          "mean": 0.2035412,
+          "std": 0.07791210621206437,
+          "median": 0.2013525,
+          "ci_95": [
+            0.14780623676247984,
+            0.2592761632375202
+          ]
+        }
+      },
+      "h_statistic": 9.856097560975627,
+      "p_value": 0.019829811139920814,
+      "eta_squared": 0.1904471544715452,
+      "effect_size_label": "grande",
+      "significant": true,
+      "dunn": [
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "MusicGen-small",
+          "z": 0.9946196723788082,
+          "p_value": 0.31992127592484465,
+          "p_bonferroni": 1.0,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "AudioLDM2",
+          "z": 2.658694893474121,
+          "p_value": 0.007844396583766677,
+          "p_bonferroni": 0.047066379502600064,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "Stable-Audio-Open",
+          "z": 2.5439310851227197,
+          "p_value": 0.010961270819818125,
+          "p_bonferroni": 0.06576762491890875,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "AudioLDM2",
+          "z": 1.6640752210953127,
+          "p_value": 0.09609739816576468,
+          "p_bonferroni": 0.5765843889945881,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "Stable-Audio-Open",
+          "z": 1.5493114127439116,
+          "p_value": 0.12130687755838854,
+          "p_bonferroni": 0.7278412653503312,
+          "significant": false
+        },
+        {
+          "model_a": "AudioLDM2",
+          "model_b": "Stable-Audio-Open",
+          "z": -0.11476380835140115,
+          "p_value": 0.9086323362161195,
+          "p_bonferroni": 1.0,
+          "significant": false
+        }
+      ]
+    },
+    "hip-hop": {
+      "n_models": 4,
+      "models": [
+        "MusicGen-medium",
+        "MusicGen-small",
+        "AudioLDM2",
+        "Stable-Audio-Open"
+      ],
+      "group_sizes": {
+        "MusicGen-medium": 10,
+        "MusicGen-small": 10,
+        "AudioLDM2": 10,
+        "Stable-Audio-Open": 10
+      },
+      "descriptive": {
+        "MusicGen-medium": {
+          "n": 10,
+          "mean": 0.30767259999999996,
+          "std": 0.05492412789415352,
+          "median": 0.3107885,
+          "ci_95": [
+            0.2683822458065012,
+            0.3469629541934987
+          ]
+        },
+        "MusicGen-small": {
+          "n": 10,
+          "mean": 0.24783899999999998,
+          "std": 0.08067076302822203,
+          "median": 0.26127849999999997,
+          "ci_95": [
+            0.1901306125578384,
+            0.3055473874421616
+          ]
+        },
+        "AudioLDM2": {
+          "n": 10,
+          "mean": 0.21795939999999997,
+          "std": 0.039620842091561415,
+          "median": 0.222131,
+          "ci_95": [
+            0.18961635698942833,
+            0.2463024430105716
+          ]
+        },
+        "Stable-Audio-Open": {
+          "n": 10,
+          "mean": 0.25311659999999997,
+          "std": 0.04793633410449507,
+          "median": 0.2532975,
+          "ci_95": [
+            0.2188250123514323,
+            0.2874081876485676
+          ]
+        }
+      },
+      "h_statistic": 11.998536585365855,
+      "p_value": 0.007388175227176072,
+      "eta_squared": 0.24995934959349597,
+      "effect_size_label": "grande",
+      "significant": true,
+      "dunn": [
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "MusicGen-small",
+          "z": 1.6640752210953127,
+          "p_value": 0.09609739816576468,
+          "p_bonferroni": 0.5765843889945881,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "AudioLDM2",
+          "z": 3.4429142505420267,
+          "p_value": 0.0005754817530356782,
+          "p_bonferroni": 0.003452890518214069,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "Stable-Audio-Open",
+          "z": 2.0083666461495153,
+          "p_value": 0.044604344513703875,
+          "p_bonferroni": 0.26762606708222325,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "AudioLDM2",
+          "z": 1.7788390294467138,
+          "p_value": 0.07526615638569734,
+          "p_bonferroni": 0.451596938314184,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "Stable-Audio-Open",
+          "z": 0.3442914250542028,
+          "p_value": 0.7306271323770264,
+          "p_bonferroni": 1.0,
+          "significant": false
+        },
+        {
+          "model_a": "AudioLDM2",
+          "model_b": "Stable-Audio-Open",
+          "z": -1.4345476043925112,
+          "p_value": 0.15141605443579387,
+          "p_bonferroni": 0.9084963266147632,
+          "significant": false
+        }
+      ]
+    },
+    "jazz": {
+      "n_models": 4,
+      "models": [
+        "MusicGen-medium",
+        "MusicGen-small",
+        "AudioLDM2",
+        "Stable-Audio-Open"
+      ],
+      "group_sizes": {
+        "MusicGen-medium": 10,
+        "MusicGen-small": 10,
+        "AudioLDM2": 10,
+        "Stable-Audio-Open": 10
+      },
+      "descriptive": {
+        "MusicGen-medium": {
+          "n": 10,
+          "mean": 0.3001739,
+          "std": 0.05903569638494624,
+          "median": 0.2918305,
+          "ci_95": [
+            0.2579423068922413,
+            0.3424054931077587
+          ]
+        },
+        "MusicGen-small": {
+          "n": 10,
+          "mean": 0.23095910000000003,
+          "std": 0.06130032349642754,
+          "median": 0.24499500000000002,
+          "ci_95": [
+            0.1871074902485948,
+            0.27481070975140526
+          ]
+        },
+        "AudioLDM2": {
+          "n": 10,
+          "mean": 0.1947942,
+          "std": 0.05002824610557519,
+          "median": 0.1880595,
+          "ci_95": [
+            0.15900614865477677,
+            0.23058225134522323
+          ]
+        },
+        "Stable-Audio-Open": {
+          "n": 10,
+          "mean": 0.17261169999999998,
+          "std": 0.05116734882292287,
+          "median": 0.182167,
+          "ci_95": [
+            0.13600878365931213,
+            0.20921461634068783
+          ]
+        }
+      },
+      "h_statistic": 16.311219512195095,
+      "p_value": 0.0009789689575811862,
+      "eta_squared": 0.36975609756097483,
+      "effect_size_label": "grande",
+      "significant": true,
+      "dunn": [
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "MusicGen-small",
+          "z": 1.9127301391900149,
+          "p_value": 0.05578260870684404,
+          "p_bonferroni": 0.33469565224106423,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "AudioLDM2",
+          "z": 3.175132031055425,
+          "p_value": 0.001497683388102855,
+          "p_bonferroni": 0.00898610032861713,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "Stable-Audio-Open",
+          "z": 3.7106964700286285,
+          "p_value": 0.0002066898110431037,
+          "p_bonferroni": 0.0012401388662586221,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "AudioLDM2",
+          "z": 1.2624018918654096,
+          "p_value": 0.2068042088191273,
+          "p_bonferroni": 1.0,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "Stable-Audio-Open",
+          "z": 1.797966330838614,
+          "p_value": 0.07218234346733654,
+          "p_bonferroni": 0.43309406080401924,
+          "significant": false
+        },
+        {
+          "model_a": "AudioLDM2",
+          "model_b": "Stable-Audio-Open",
+          "z": 0.5355644389732043,
+          "p_value": 0.5922596112569116,
+          "p_bonferroni": 1.0,
+          "significant": false
+        }
+      ]
+    },
+    "latin": {
+      "n_models": 4,
+      "models": [
+        "MusicGen-medium",
+        "MusicGen-small",
+        "AudioLDM2",
+        "Stable-Audio-Open"
+      ],
+      "group_sizes": {
+        "MusicGen-medium": 10,
+        "MusicGen-small": 10,
+        "AudioLDM2": 10,
+        "Stable-Audio-Open": 10
+      },
+      "descriptive": {
+        "MusicGen-medium": {
+          "n": 10,
+          "mean": 0.3587983,
+          "std": 0.03752727900859439,
+          "median": 0.36724650000000003,
+          "ci_95": [
+            0.33195290179891407,
+            0.38564369820108596
+          ]
+        },
+        "MusicGen-small": {
+          "n": 10,
+          "mean": 0.3465039,
+          "std": 0.04712201966160713,
+          "median": 0.3657815,
+          "ci_95": [
+            0.31279483781178385,
+            0.3802129621882161
+          ]
+        },
+        "AudioLDM2": {
+          "n": 10,
+          "mean": 0.2808291,
+          "std": 0.06894378915617498,
+          "median": 0.2962365,
+          "ci_95": [
+            0.23150968430334481,
+            0.3301485156966552
+          ]
+        },
+        "Stable-Audio-Open": {
+          "n": 10,
+          "mean": 0.23621129999999999,
+          "std": 0.02197147053213427,
+          "median": 0.2386875,
+          "ci_95": [
+            0.2204938568205068,
+            0.2519287431794932
+          ]
+        }
+      },
+      "h_statistic": 21.900000000000006,
+      "p_value": 6.843212746518489e-05,
+      "eta_squared": 0.5250000000000001,
+      "effect_size_label": "grande",
+      "significant": true,
+      "dunn": [
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "MusicGen-small",
+          "z": 0.36341872644610324,
+          "p_value": 0.7162921149986885,
+          "p_bonferroni": 1.0,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "AudioLDM2",
+          "z": 2.792586003217422,
+          "p_value": 0.005228856563675999,
+          "p_bonferroni": 0.03137313938205599,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "Stable-Audio-Open",
+          "z": 3.959351388123331,
+          "p_value": 7.515359268395194e-05,
+          "p_bonferroni": 0.00045092155610371165,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "AudioLDM2",
+          "z": 2.429167276771319,
+          "p_value": 0.015133548245879203,
+          "p_bonferroni": 0.09080128947527522,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "Stable-Audio-Open",
+          "z": 3.595932661677227,
+          "p_value": 0.0003232314115277912,
+          "p_bonferroni": 0.0019393884691667473,
+          "significant": true
+        },
+        {
+          "model_a": "AudioLDM2",
+          "model_b": "Stable-Audio-Open",
+          "z": 1.166765384905909,
+          "p_value": 0.24330512953623007,
+          "p_bonferroni": 1.0,
+          "significant": false
+        }
+      ]
+    },
+    "pop": {
+      "n_models": 4,
+      "models": [
+        "MusicGen-medium",
+        "MusicGen-small",
+        "AudioLDM2",
+        "Stable-Audio-Open"
+      ],
+      "group_sizes": {
+        "MusicGen-medium": 10,
+        "MusicGen-small": 10,
+        "AudioLDM2": 10,
+        "Stable-Audio-Open": 10
+      },
+      "descriptive": {
+        "MusicGen-medium": {
+          "n": 10,
+          "mean": 0.3237368,
+          "std": 0.049378556499310056,
+          "median": 0.3104715,
+          "ci_95": [
+            0.2884135086013559,
+            0.3590600913986441
+          ]
+        },
+        "MusicGen-small": {
+          "n": 10,
+          "mean": 0.2662993,
+          "std": 0.07159597594069098,
+          "median": 0.2720285,
+          "ci_95": [
+            0.21508262417111718,
+            0.31751597582888286
+          ]
+        },
+        "AudioLDM2": {
+          "n": 10,
+          "mean": 0.2129836,
+          "std": 0.06915936171577448,
+          "median": 0.1992485,
+          "ci_95": [
+            0.16350997298409753,
+            0.26245722701590246
+          ]
+        },
+        "Stable-Audio-Open": {
+          "n": 10,
+          "mean": 0.20696940000000003,
+          "std": 0.05947090714925708,
+          "median": 0.22133999999999998,
+          "ci_95": [
+            0.1644264758664388,
+            0.24951232413356125
+          ]
+        }
+      },
+      "h_statistic": 14.579999999999984,
+      "p_value": 0.0022131295915494274,
+      "eta_squared": 0.3216666666666662,
+      "effect_size_label": "grande",
+      "significant": true,
+      "dunn": [
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "MusicGen-small",
+          "z": 1.5493114127439123,
+          "p_value": 0.12130687755838832,
+          "p_bonferroni": 0.7278412653503299,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "AudioLDM2",
+          "z": 3.213386633839225,
+          "p_value": 0.0013117957226174148,
+          "p_bonferroni": 0.007870774335704489,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "Stable-Audio-Open",
+          "z": 3.2707685380149254,
+          "p_value": 0.0010725565698490591,
+          "p_bonferroni": 0.006435339419094355,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "AudioLDM2",
+          "z": 1.6640752210953127,
+          "p_value": 0.09609739816576468,
+          "p_bonferroni": 0.5765843889945881,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "Stable-Audio-Open",
+          "z": 1.721457125271013,
+          "p_value": 0.08516790588395606,
+          "p_bonferroni": 0.5110074353037364,
+          "significant": false
+        },
+        {
+          "model_a": "AudioLDM2",
+          "model_b": "Stable-Audio-Open",
+          "z": 0.05738190417570024,
+          "p_value": 0.9542409776242506,
+          "p_bonferroni": 1.0,
+          "significant": false
+        }
+      ]
+    },
+    "reggaeton": {
+      "n_models": 4,
+      "models": [
+        "MusicGen-medium",
+        "MusicGen-small",
+        "AudioLDM2",
+        "Stable-Audio-Open"
+      ],
+      "group_sizes": {
+        "MusicGen-medium": 10,
+        "MusicGen-small": 10,
+        "AudioLDM2": 10,
+        "Stable-Audio-Open": 10
+      },
+      "descriptive": {
+        "MusicGen-medium": {
+          "n": 10,
+          "mean": 0.2854858,
+          "std": 0.0419821339323183,
+          "median": 0.2894355,
+          "ci_95": [
+            0.25545359056413075,
+            0.3155180094358693
+          ]
+        },
+        "MusicGen-small": {
+          "n": 10,
+          "mean": 0.2405768,
+          "std": 0.05935546863469654,
+          "median": 0.24447649999999999,
+          "ci_95": [
+            0.19811645560504465,
+            0.28303714439495536
+          ]
+        },
+        "AudioLDM2": {
+          "n": 10,
+          "mean": 0.2137851,
+          "std": 0.05271482084333062,
+          "median": 0.2208475,
+          "ci_95": [
+            0.1760751888627171,
+            0.2514950111372829
+          ]
+        },
+        "Stable-Audio-Open": {
+          "n": 10,
+          "mean": 0.2009834,
+          "std": 0.050791572166606104,
+          "median": 0.19749650000000002,
+          "ci_95": [
+            0.16464929808551093,
+            0.23731750191448908
+          ]
+        }
+      },
+      "h_statistic": 11.960487804878085,
+      "p_value": 0.007519745496457866,
+      "eta_squared": 0.24890243902439124,
+      "effect_size_label": "grande",
+      "significant": true,
+      "dunn": [
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "MusicGen-small",
+          "z": 1.8936028377981144,
+          "p_value": 0.05827774656526885,
+          "p_bonferroni": 0.3496664793916131,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "AudioLDM2",
+          "z": 2.6778221948660206,
+          "p_value": 0.007410254402604233,
+          "p_bonferroni": 0.044461526415625396,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "Stable-Audio-Open",
+          "z": 3.2325139352311245,
+          "p_value": 0.0012270615090241854,
+          "p_bonferroni": 0.0073623690541451126,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "AudioLDM2",
+          "z": 0.7842193570679064,
+          "p_value": 0.43291140884135126,
+          "p_bonferroni": 1.0,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "Stable-Audio-Open",
+          "z": 1.3389110974330103,
+          "p_value": 0.1805996164939243,
+          "p_bonferroni": 1.0,
+          "significant": false
+        },
+        {
+          "model_a": "AudioLDM2",
+          "model_b": "Stable-Audio-Open",
+          "z": 0.554691740365104,
+          "p_value": 0.5791055267004546,
+          "p_bonferroni": 1.0,
+          "significant": false
+        }
+      ]
+    },
+    "rock": {
+      "n_models": 4,
+      "models": [
+        "MusicGen-medium",
+        "MusicGen-small",
+        "AudioLDM2",
+        "Stable-Audio-Open"
+      ],
+      "group_sizes": {
+        "MusicGen-medium": 10,
+        "MusicGen-small": 10,
+        "AudioLDM2": 10,
+        "Stable-Audio-Open": 10
+      },
+      "descriptive": {
+        "MusicGen-medium": {
+          "n": 10,
+          "mean": 0.31620829999999994,
+          "std": 0.0386410078401172,
+          "median": 0.322753,
+          "ci_95": [
+            0.2885661881879055,
+            0.34385041181209436
+          ]
+        },
+        "MusicGen-small": {
+          "n": 10,
+          "mean": 0.26811799999999997,
+          "std": 0.05161727450078015,
+          "median": 0.2751895,
+          "ci_95": [
+            0.2311932262184834,
+            0.30504277378151656
+          ]
+        },
+        "AudioLDM2": {
+          "n": 10,
+          "mean": 0.2177873,
+          "std": 0.08345218646100426,
+          "median": 0.222622,
+          "ci_95": [
+            0.158089202096769,
+            0.277485397903231
+          ]
+        },
+        "Stable-Audio-Open": {
+          "n": 10,
+          "mean": 0.18368040000000002,
+          "std": 0.0585245230730959,
+          "median": 0.181283,
+          "ci_95": [
+            0.14181447825102136,
+            0.22554632174897868
+          ]
+        }
+      },
+      "h_statistic": 17.527317073170764,
+      "p_value": 0.0005504636605886153,
+      "eta_squared": 0.40353658536585457,
+      "effect_size_label": "grande",
+      "significant": true,
+      "dunn": [
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "MusicGen-small",
+          "z": 1.5875660155277125,
+          "p_value": 0.11238450807322575,
+          "p_bonferroni": 0.6743070484393545,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "AudioLDM2",
+          "z": 2.849967907393122,
+          "p_value": 0.004372364059999967,
+          "p_bonferroni": 0.0262341843599998,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "Stable-Audio-Open",
+          "z": 3.978478689515231,
+          "p_value": 6.93576263937068e-05,
+          "p_bonferroni": 0.00041614575836224077,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "AudioLDM2",
+          "z": 1.2624018918654094,
+          "p_value": 0.2068042088191273,
+          "p_bonferroni": 1.0,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "Stable-Audio-Open",
+          "z": 2.3909126739875184,
+          "p_value": 0.016806549783110913,
+          "p_bonferroni": 0.10083929869866548,
+          "significant": false
+        },
+        {
+          "model_a": "AudioLDM2",
+          "model_b": "Stable-Audio-Open",
+          "z": 1.1285107821221092,
+          "p_value": 0.25910426591945246,
+          "p_bonferroni": 1.0,
+          "significant": false
+        }
+      ]
+    },
+    "world": {
+      "n_models": 4,
+      "models": [
+        "MusicGen-medium",
+        "MusicGen-small",
+        "AudioLDM2",
+        "Stable-Audio-Open"
+      ],
+      "group_sizes": {
+        "MusicGen-medium": 10,
+        "MusicGen-small": 10,
+        "AudioLDM2": 10,
+        "Stable-Audio-Open": 10
+      },
+      "descriptive": {
+        "MusicGen-medium": {
+          "n": 10,
+          "mean": 0.3573001,
+          "std": 0.0417204429944788,
+          "median": 0.36334,
+          "ci_95": [
+            0.32745509298374414,
+            0.3871451070162559
+          ]
+        },
+        "MusicGen-small": {
+          "n": 10,
+          "mean": 0.3030685,
+          "std": 0.03521401678388245,
+          "median": 0.308475,
+          "ci_95": [
+            0.2778779099066828,
+            0.3282590900933172
+          ]
+        },
+        "AudioLDM2": {
+          "n": 10,
+          "mean": 0.2664423,
+          "std": 0.06577732238739697,
+          "median": 0.2614095,
+          "ci_95": [
+            0.21938803817391678,
+            0.31349656182608326
+          ]
+        },
+        "Stable-Audio-Open": {
+          "n": 10,
+          "mean": 0.2597492,
+          "std": 0.06507602922018726,
+          "median": 0.25480800000000003,
+          "ci_95": [
+            0.2131966130841903,
+            0.3063017869158097
+          ]
+        }
+      },
+      "h_statistic": 14.287317073170726,
+      "p_value": 0.002539040171319021,
+      "eta_squared": 0.3135365853658535,
+      "effect_size_label": "grande",
+      "significant": true,
+      "dunn": [
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "MusicGen-small",
+          "z": 1.9701120433657153,
+          "p_value": 0.04882553095877995,
+          "p_bonferroni": 0.2929531857526797,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "AudioLDM2",
+          "z": 3.1560047296635245,
+          "p_value": 0.0015994626687867441,
+          "p_bonferroni": 0.009596776012720465,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-medium",
+          "model_b": "Stable-Audio-Open",
+          "z": 3.3664050449744263,
+          "p_value": 0.0007615479587312901,
+          "p_bonferroni": 0.004569287752387741,
+          "significant": true
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "AudioLDM2",
+          "z": 1.1858926862978094,
+          "p_value": 0.23566468181558853,
+          "p_bonferroni": 1.0,
+          "significant": false
+        },
+        {
+          "model_a": "MusicGen-small",
+          "model_b": "Stable-Audio-Open",
+          "z": 1.396293001608711,
+          "p_value": 0.1626262803959273,
+          "p_bonferroni": 0.9757576823755638,
+          "significant": false
+        },
+        {
+          "model_a": "AudioLDM2",
+          "model_b": "Stable-Audio-Open",
+          "z": 0.21040031531090156,
+          "p_value": 0.8333552465788063,
+          "p_bonferroni": 1.0,
+          "significant": false
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,74 @@
+[project]
+name = "music-transformation-system"
+version = "0.1.0"
+description = "Modular music transformation system with audio projects, async jobs, stems, MIDI layers, features, latent embeddings, and render pipelines."
+requires-python = ">=3.11,<3.15"
+dependencies = [
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.30",
+  "pydantic>=2.7",
+  "python-multipart>=0.0.9",
+  "typer>=0.12",
+  "celery>=5.4",
+  "redis>=5.0",
+  "numpy>=1.26",
+  "soundfile>=0.12",
+  "librosa>=0.10",
+  "mido>=1.3",
+]
+
+[project.optional-dependencies]
+audio = [
+  "pyloudnorm>=0.1",
+  "demucs>=4.0",
+  "torchcodec>=0.13",
+  "basic-pitch>=0.4; python_version < '3.12'",
+  "pedalboard>=0.9",
+]
+ml = [
+  "torch>=2.3",
+  "lightning>=2.2",
+  "miditok>=3.0",
+  "pretty_midi>=0.2",
+  "miditoolkit>=1.0",
+  "transformers>=4.38.0",
+]
+metrics = [
+  "scipy>=1.12",
+  "pandas>=2.2",
+  "matplotlib>=3.8",
+  "openpyxl>=3.1",
+]
+# Backends de embedding/clasificación opcionales para métricas "de referencia"
+# (Fase 4). Sin estos, FAD/KAD usan el extractor 'mel' y KLD el clasificador de
+# centroides propio; con ellos se habilitan vggish/pann/clap y PaSST (527 clases).
+metrics-models = [
+  "torch>=2.3",
+  "torchvggish>=0.1",      # FAD/KAD con VGGish
+  "panns_inference>=0.1",  # FAD/KAD con PANN (validación cruzada)
+  "laion-clap>=1.1",       # CLAP-score y extractor clap
+  "hear21passt>=0.0.19",   # KLD con PaSST (AudioSet, 527 clases)
+]
+dev = [
+  "pytest>=8.2",
+  "ruff>=0.6",
+]
+
+[project.scripts]
+hybrid-engine = "hybrid_music_engine.cli.main:app"
+
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["hybrid_music_engine*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"

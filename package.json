@@ -1,0 +1,24 @@
+{
+  "name": "motor-transformacion-musical-hibrida",
+  "version": "1.0.0",
+  "description": "Sistema modular de IA para transformar audio en material musical entrenable y renderizarlo.",
+  "main": "scripts/node/start-all.js",
+  "scripts": {
+    "start": "node scripts/node/start-all.js",
+    "dev": "node scripts/node/start-all.js",
+    "dev:backend": "node scripts/node/start-backend.js",
+    "dev:frontend": "node scripts/node/start-frontend.js",
+    "verify": "node scripts/node/verify-env.js",
+    "test": "node scripts/node/run-tests.js"
+  },
+  "keywords": [
+    "music",
+    "ai",
+    "fastapi",
+    "midi",
+    "reggae",
+    "classical"
+  ],
+  "author": "Homero Meneses Vázquez",
+  "license": "MIT"
+}

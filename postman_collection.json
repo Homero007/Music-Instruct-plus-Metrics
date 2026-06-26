@@ -1,0 +1,353 @@
+{
+  "info": {
+    "name": "Sistema de Transformacion Musical API",
+    "description": "Coleccion Postman para probar la API local. Configura baseUrl si tu backend no corre en http://127.0.0.1:8100.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8100",
+      "type": "string"
+    },
+    {
+      "key": "jobId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "evaluationId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "rankingId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "modelPath",
+      "value": "data/models/tokens/MODEL_ID/model.json",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Sistema y recursos",
+      "item": [
+        {
+          "name": "Health",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/health"
+          }
+        },
+        {
+          "name": "Resources",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/resources"
+          }
+        },
+        {
+          "name": "Presets",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/presets"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Datasets y Jamendo",
+      "item": [
+        {
+          "name": "Listar catalogos Jamendo",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/datasets/jamendo/catalogs"
+          }
+        },
+        {
+          "name": "Descargar Jamendo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"genre_tags\": null,\n  \"catalog_name\": \"mtg_jamendo\",\n  \"tracks_per_page\": 200,\n  \"max_tracks_per_genre\": 500,\n  \"download_audio\": true,\n  \"client_id\": \"b6747d04\",\n  \"source\": \"mtg-cdn\",\n  \"concurrent_downloads\": 16\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/download-jamendo"
+          }
+        },
+        {
+          "name": "Seleccionar Jamendo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"catalog_path\": \"data/datasets/jamendo/catalog.json\",\n  \"genres\": [\"classical\", \"electronic\", \"reggaeton\"],\n  \"max_tracks_per_genre\": 150,\n  \"output_name\": \"delivery_jamendo_150\"\n}"
+            },
+            "url": "{{baseUrl}}/api/datasets/jamendo/select"
+          }
+        },
+        {
+          "name": "Preparar clips Jamendo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"catalog_path\": \"data/datasets/jamendo/delivery_jamendo_150/catalog.json\",\n  \"clip_duration_seconds\": 20,\n  \"hop_duration_seconds\": null,\n  \"max_clips_per_track\": null,\n  \"min_clip_seconds\": 5,\n  \"sample_rate\": null,\n  \"mono\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/prepare-jamendo-clips"
+          }
+        },
+        {
+          "name": "Procesar clips Jamendo",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"clips_catalog_path\": \"data/datasets/jamendo/selected/clips_catalog.json\",\n  \"max_clips\": null,\n  \"run_stems\": true,\n  \"run_melodic\": true,\n  \"run_drums\": true,\n  \"run_features\": true,\n  \"run_tokens\": true,\n  \"continue_on_error\": true,\n  \"processing_mode\": \"token_vae_demucs\",\n  \"midi_cleanup\": true,\n  \"quantize_grid\": \"1/16\",\n  \"strict_demucs\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/process-jamendo-clips"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Generacion, fusion y render",
+      "item": [
+        {
+          "name": "Entrenar modelo de tokens",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token_manifest_path\": \"data/datasets/jamendo/processed/tokens_manifest.json\",\n  \"model_name\": \"token_transformer\",\n  \"order\": 2,\n  \"model_type\": \"transformer\",\n  \"sequence_length\": 128,\n  \"epochs\": 8,\n  \"batch_size\": 16,\n  \"embedding_dim\": 128,\n  \"num_layers\": 3,\n  \"num_heads\": 4\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/train-token-model"
+          }
+        },
+        {
+          "name": "Generar ranking",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model_path\": \"{{modelPath}}\",\n  \"duration_seconds\": 30,\n  \"output_name\": \"ranked_generation\",\n  \"candidates\": 6,\n  \"seed\": 42,\n  \"max_tokens\": 1200,\n  \"temperature\": 0.9,\n  \"top_k\": 50,\n  \"top_p\": 0.95,\n  \"condition_genre\": \"electronic\",\n  \"feature_tokens\": [\"genre:electronic\"],\n  \"embedding_path\": null,\n  \"token_vae_embedding_path\": null,\n  \"export_layers\": true,\n  \"render_best\": true,\n  \"render_engine\": \"pedalboard\",\n  \"soundfont_path\": null,\n  \"export_mp3\": true\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/generate-ranked"
+          }
+        },
+        {
+          "name": "Fusionar embeddings ponderados",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"embeddings\": [\n    { \"path\": \"data/embeddings/genre/classical.pt\", \"weight\": 0.5, \"label\": \"classical\" },\n    { \"path\": \"data/embeddings/genre/electronic.pt\", \"weight\": 0.5, \"label\": \"electronic\" }\n  ],\n  \"output_name\": \"fusion_classical_electronic\"\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/blend-weighted-embeddings"
+          }
+        },
+        {
+          "name": "Render MIDI",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"midi_path\": \"data/generated/example.mid\",\n  \"output_name\": \"preview\",\n  \"engine\": \"pedalboard\",\n  \"soundfont_path\": null,\n  \"sample_rate\": 44100,\n  \"export_mp3\": true,\n  \"pedalboard_preset\": \"master\",\n  \"plugin_paths\": []\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/render-midi"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Evaluacion y metricas",
+      "item": [
+        {
+          "name": "Disponibilidad de originales",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/evaluations/availability"
+          }
+        },
+        {
+          "name": "Fuentes generadas evaluables",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/evaluations/generated-sources"
+          }
+        },
+        {
+          "name": "Evaluar resultados generados",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"genre_selections\": {\n    \"classical\": [\n      { \"source_type\": \"ranking\", \"source_id\": \"{{rankingId}}\", \"limit\": 1 }\n    ]\n  },\n  \"target_per_genre\": 20,\n  \"pairing_strategy\": \"same_genre_round_robin\",\n  \"real_audio_root\": null,\n  \"output_name\": \"resultados_generados\",\n  \"metrics\": [\"fad\", \"kld\", \"tempo\", \"midi\"],\n  \"include_clap\": false\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/evaluation/from-results"
+          }
+        },
+        {
+          "name": "Generar lote nuevo de evaluacion",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model_path\": \"{{modelPath}}\",\n  \"distribution\": { \"classical\": 1, \"electronic\": 1, \"reggaeton\": 1 },\n  \"real_audio_root\": null,\n  \"duration_seconds\": 30,\n  \"output_name\": \"evaluation_batch\",\n  \"seed\": 42,\n  \"max_tokens\": 1200,\n  \"temperature\": 0.9,\n  \"top_k\": 50,\n  \"top_p\": 0.95,\n  \"export_layers\": true,\n  \"render_audio\": true,\n  \"render_engine\": \"pedalboard\",\n  \"export_mp3\": true,\n  \"target_total\": 3\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/evaluation/generate-batch"
+          }
+        },
+        {
+          "name": "Calcular metricas sin CLAP",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"evaluation_id\": \"{{evaluationId}}\",\n  \"generated_root\": null,\n  \"real_root\": null,\n  \"prompts_path\": null,\n  \"classifier_path\": null,\n  \"train_classifier_if_missing\": true,\n  \"metrics\": [\"fad\", \"kld\", \"tempo\", \"midi\"],\n  \"fad_extractor\": \"mel\",\n  \"clap_model\": \"clap\",\n  \"device\": \"cpu\"\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/evaluation/run"
+          }
+        },
+        {
+          "name": "Calcular metricas con CLAP opcional",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"evaluation_id\": \"{{evaluationId}}\",\n  \"metrics\": [\"fad\", \"kld\", \"tempo\", \"midi\", \"clap\"],\n  \"fad_extractor\": \"mel\",\n  \"train_classifier_if_missing\": true,\n  \"clap_model\": \"clap\",\n  \"device\": \"cpu\"\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/evaluation/run"
+          }
+        },
+        {
+          "name": "Listar evaluaciones",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/evaluations"
+          }
+        },
+        {
+          "name": "Detalle de evaluacion",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/evaluations/{{evaluationId}}"
+          }
+        },
+        {
+          "name": "Reporte de evaluacion",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/evaluations/{{evaluationId}}/report"
+          }
+        },
+        {
+          "name": "Archivos de evaluacion",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/evaluations/{{evaluationId}}/files"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clasificador KLD",
+      "item": [
+        {
+          "name": "Entrenar clasificador",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"real_audio_root\": \"data/datasets/jamendo/delivery_jamendo_150/audio\",\n  \"labels\": [\"classical\", \"electronic\", \"reggaeton\"],\n  \"output_name\": \"audio_classifier\",\n  \"max_files_per_class\": null,\n  \"temperature\": 1.0\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/classifier/train"
+          }
+        },
+        {
+          "name": "Predecir probabilidades",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model_path\": null,\n  \"audio_paths\": [\"data/evaluations/EVALUATION_ID/generated/classical/example.wav\"],\n  \"audio_root\": null\n}"
+            },
+            "url": "{{baseUrl}}/api/jobs/classifier/predict"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Archivos y jobs",
+      "item": [
+        {
+          "name": "Listar jobs",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/jobs"
+          }
+        },
+        {
+          "name": "Consultar job",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/jobs/{{jobId}}"
+          }
+        },
+        {
+          "name": "Descargar archivo",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/files?path=/ruta/absoluta/al/archivo"
+          }
+        }
+      ]
+    }
+  ]
+}

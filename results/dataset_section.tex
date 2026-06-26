@@ -1,0 +1,167 @@
+% ============================================================
+%  SECCIÓN: Obtención de datos y construcción del banco de pruebas
+%  Formato IEEE (IEEEtran) — español
+%  Complementa a benchmark_section.tex
+% ============================================================
+
+\section{Obtención de Datos}
+\label{sec:datos}
+
+El sistema distingue dos necesidades de datos con propósitos distintos:
+material de \emph{entrenamiento} para el modelo generativo y un \emph{banco
+de pruebas} independiente para la evaluación cuantitativa
+(Sección~\ref{sec:benchmark}).
+La interfaz expone ambos caminos de forma explícita, de modo que el usuario
+puede \textbf{reutilizar pistas ya descargadas} o \textbf{descargar material
+nuevo} sin salir de la aplicación.
+
+\subsection{Bancos de datos disponibles}
+\label{sec:datos:bancos}
+
+\begin{itemize}
+  \item \textbf{MTG-Jamendo}~\cite{bogdanov2019mtg}: catálogo de música con
+        licencia Creative Commons, etiquetada por género. Es la fuente de
+        \emph{entrenamiento}. En el frontend, el paso \textit{Importar audio}
+        ofrece dos opciones:
+        \begin{itemize}
+          \item \textit{Opción A — Usar pistas ya descargadas}: un selector
+                lista los catálogos locales con sus conteos por género, de
+                modo que el usuario reutiliza el material previamente bajado.
+          \item \textit{Opción B — Descargar nuevas pistas}: un panel permite
+                indicar géneros, \textit{tags} y cantidad, y descargar audio
+                nuevo desde la CDN de Jamendo.
+        \end{itemize}
+  \item \textbf{MusicCaps}~\cite{agostinelli2023musiclm}: 5\,521 clips de
+        YouTube de 10\,s, cada uno anotado con un \textit{caption} detallado
+        en inglés producido por músicos profesionales. Es la fuente del
+        \emph{banco de pruebas} de evaluación. Se construye con el guion
+        reproducible \texttt{scripts/sample\_testset.py}
+        (Sección~\ref{sec:datos:testset}).
+  \item \textbf{Audio individual}: una pista local única, para análisis
+        puntual fuera del flujo de entrenamiento o evaluación.
+\end{itemize}
+
+% ----------------------------------------------------------
+\subsection{Fuente de datos del banco de pruebas: MusicCaps}
+\label{sec:datos:musiccaps}
+
+MusicCaps es un subconjunto de AudioSet disponible públicamente a través de
+Google Research.\footnote{\url{https://huggingface.co/datasets/google/MusicCaps}}
+Cada \textit{caption} incluye género, instrumentación, tempo, estado de ánimo
+y estructura, lo que lo hace idóneo para evaluar el condicionamiento textual
+de modelos generativos de música.
+
+% ----------------------------------------------------------
+\subsection{Construcción del banco de pruebas}
+\label{sec:datos:testset}
+
+\subsubsection{Criterios de selección}
+
+Se seleccionan 100 clips que cumplen los siguientes criterios:
+
+\begin{enumerate}
+  \item El video de YouTube está disponible para descarga (verificado con
+        \texttt{yt-dlp -{}-simulate}).
+  \item El clip se normaliza a una duración exacta de 10\,s a 32\,kHz.
+  \item El \textit{caption} tiene al menos 20 palabras y menciona, como
+        mínimo, género e instrumento, junto con una referencia de tempo.
+  \item El conjunto es balanceado: 10 géneros $\times$ 10 clips
+        (Jazz, Rock, Electrónica, Clásica, Pop, Hip-Hop, R\&B, Metal, Folk,
+        Latina).
+\end{enumerate}
+
+\paragraph{Nota sobre la referencia de tempo}
+El criterio original exigía que al menos 2 clips por género incluyeran una
+referencia de tempo en BPM numérico. Sin embargo, al inspeccionar el corpus
+se verificó que \emph{solo 1 de los 5\,521 clips} de MusicCaps contiene un BPM
+numérico explícito; los \textit{captions} describen el tempo de forma
+\emph{cualitativa} (p.\,ej.\ \textit{``fast tempo''}, \textit{``slow
+groove''}), con 2\,497 clips que mencionan el tempo verbalmente.
+Por tanto, el criterio se adapta de la siguiente forma: el filtro de
+\textit{caption} exige una \emph{mención} de tempo (cualitativa o numérica),
+y la columna \texttt{tempo\_bpm} del banco se completa con una
+\emph{estimación} de BPM derivada del propio audio mediante
+\texttt{librosa} (\textit{beat tracking}), marcada como estimada.
+Esta decisión preserva la utilidad de la anotación de tempo sin fabricar
+valores inexistentes en la fuente.
+
+\subsubsection{Disponibilidad de candidatos por género}
+
+Tras aplicar el filtro de \textit{caption} (longitud, género e instrumento)
+sobre los 5\,521 clips, el número de candidatos válidos por género es amplio
+en todos los casos, lo que garantiza poder muestrear 10 clips accesibles por
+género (Tabla~\ref{tab:candidatos}).
+
+\begin{table}[t]
+  \caption{Candidatos válidos por género tras el filtro de \textit{caption}}
+  \label{tab:candidatos}
+  \centering
+  \begin{tabular}{lr}
+    \hline
+    \textbf{Género} & \textbf{Candidatos} \\
+    \hline
+    Electrónica & 796 \\
+    Rock        & 514 \\
+    Clásica     & 208 \\
+    Pop         & 179 \\
+    Folk        & 175 \\
+    Jazz        & 160 \\
+    Hip-Hop     & 98 \\
+    Latina      & 68 \\
+    R\&B        & 63 \\
+    Metal       & 43 \\
+    \hline
+  \end{tabular}
+  \smallskip\\
+  \footnotesize{De cada conjunto se muestrean 10 clips accesibles
+  (semilla\,=\,42).}
+\end{table}
+
+\subsubsection{Procedimiento de descarga y preprocesamiento}
+
+El guion \texttt{sample\_testset.py} implementa el siguiente pipeline
+reproducible (semilla fija\,=\,42):
+
+\begin{enumerate}
+  \item Descarga el CSV oficial \texttt{musiccaps-public.csv}.
+  \item Filtra los \textit{captions} por longitud ($\geq 20$ palabras) y
+        presencia de género e instrumento.
+  \item Estratifica los candidatos por género a partir del campo
+        \texttt{aspect\_list}.
+  \item Selecciona aleatoriamente (semilla\,=\,42) 10 clips por género; la
+        verificación de disponibilidad es \emph{perezosa}: se prueban
+        candidatos barajados con \texttt{yt-dlp -{}-simulate} hasta lograr 10
+        accesibles por género.
+  \item Descarga el tramo de 10\,s con
+        \texttt{yt-dlp -{}-download-sections} y \texttt{ffmpeg}.
+  \item Normaliza a 32\,kHz mono con
+        \texttt{torchaudio.transforms.Resample}.
+  \item Verifica la integridad: cada archivo \texttt{.wav} debe contener
+        \emph{exactamente} 320\,000 muestras ($10\,\text{s} \times
+        32\,\text{kHz}$).
+  \item Estima el tempo (BPM) del audio con \texttt{librosa} y lo registra en
+        la metadata.
+\end{enumerate}
+
+\subsubsection{Entregable}
+
+El proceso produce un directorio \texttt{testset/} con 100 archivos nombrados
+como \texttt{NNNN\_genero\_BPM.wav}, un archivo \texttt{testset\_metadata.csv}
+con las columnas
+\texttt{[id, ytid, caption, genre, tempo\_bpm, instruments]}, y el guion
+reproducible \texttt{sample\_testset.py} incluido en el repositorio.
+Cada clip queda garantizado a 32\,kHz mono con exactamente 320\,000 muestras,
+condición necesaria para el cálculo consistente de las métricas FAD, CLAP,
+KLD y KAD de la Sección~\ref{sec:benchmark}.
+
+% ============================================================
+%  Referencias sugeridas adicionales (agregar al .bib)
+% ============================================================
+%
+% @inproceedings{bogdanov2019mtg,
+%   title={The {MTG}-{J}amendo Dataset for Automatic Music Tagging},
+%   author={Bogdanov, Dmitry and Won, Minz and Tovstogan, Philip and
+%           Porter, Alastair and Serra, Xavier},
+%   booktitle={ICML Machine Learning for Music Discovery Workshop}, year={2019}}
+%
+% (agostinelli2023musiclm ya está declarada en benchmark_section.tex)

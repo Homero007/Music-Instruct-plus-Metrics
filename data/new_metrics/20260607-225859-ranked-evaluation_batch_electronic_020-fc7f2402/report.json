@@ -1,0 +1,14 @@
+{
+  "stage": "new_metrics",
+  "created_at": "2026-06-07T22:59:00",
+  "generated_root": "/Users/brandonpilotzi/Downloads/hybrid_engine/data/renders/20260607-225859-ranked-evaluation_batch_electronic_020-fc7f2402",
+  "real_root": null,
+  "out_dir": "/Users/brandonpilotzi/Downloads/hybrid_engine/data/new_metrics/20260607-225859-ranked-evaluation_batch_electronic_020-fc7f2402",
+  "plots": [],
+  "audio": {
+    "error": "1"
+  },
+  "tsne": {},
+  "kld": {},
+  "note": "Etapa independiente del reward model; salida orientada a gráficos."
+}

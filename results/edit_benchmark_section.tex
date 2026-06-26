@@ -1,0 +1,115 @@
+% ============================================================
+%  SECCIÓN: Benchmark de EDICIÓN por instrucciones
+%  Formato IEEE (IEEEtran) — español
+%  Complementa benchmark_section.tex (generación). Implementación:
+%  hybrid_music_engine/new_metrics/edit_benchmark.py
+% ============================================================
+
+\section{Evaluación de la Edición por Instrucciones}
+\label{sec:edit}
+
+La comparativa de generación (Sección~\ref{sec:benchmark}) justifica la
+elección del modelo base, pero \emph{no} valida la tarea objetivo del sistema:
+dada una pista \textbf{fuente} y una \textbf{instrucción} en lenguaje natural,
+producir un audio que aplique la operación pedida \emph{preservando} el
+contenido no editado de la fuente. Un buen CLAP-score en generación libre no
+garantiza que se conserven identidad, instrumentación, estructura o mezcla.
+Esta sección define un protocolo de evaluación específico para edición.
+
+\subsection{Protocolo y datos}
+\label{sec:edit:datos}
+
+La unidad de evaluación es la \textbf{terna}
+$\{x_{\text{src}}, \text{instr}, x_{\text{tgt}}\}$: una pista fuente, una
+instrucción (p.\,ej.\ \textit{``añade una batería suave''}, \textit{``quita la
+voz''}, \textit{``haz el tempo más lento''}) y un audio objetivo que
+representa el resultado deseado. El editor produce una salida
+$\hat{x}$ que se compara contra fuente, instrucción y objetivo.
+
+\subsection{Líneas base}
+\label{sec:edit:baselines}
+
+Para no confundir generación con edición, se comparan al menos cuatro
+referencias:
+\begin{enumerate}
+  \item \textbf{Reconstrucción sin edición} ($\hat{x} = x_{\text{src}}$):
+        preserva el 100\,\% del contenido pero no aplica ninguna operación;
+        ancla inferior de \emph{éxito de operación}.
+  \item \textbf{MusicGen sólo texto}: condicionado únicamente por la
+        instrucción, ignora la fuente; alto en alineación texto-audio pero
+        bajo en preservación.
+  \item \textbf{MusicGen con \textit{audio prompt} sin módulo de fusión}:
+        usa la fuente como contexto pero sin el mecanismo de fusión aprendido.
+  \item \textbf{Instruct-MusicGen} (referencia más cercana) o el adaptador
+        propuesto con \texttt{AudioFusionModule}~+~LoRA.
+\end{enumerate}
+
+\subsection{Métricas}
+\label{sec:edit:metricas}
+
+Se reportan cuatro métricas automáticas y una subjetiva
+(Tabla~\ref{tab:edit-metricas}):
+
+\begin{itemize}
+  \item \textbf{FAD$\to$objetivo} ($\downarrow$): distancia de Fréchet entre
+        las distribuciones de embeddings de $\{\hat{x}\}$ y $\{x_{\text{tgt}}\}$.
+        Cercanía al resultado deseado.
+  \item \textbf{CLAP-instrucción} ($\uparrow$): coseno entre el embedding de
+        $\hat{x}$ y el de la instrucción. Mide si la salida refleja lo pedido.
+  \item \textbf{Preservación de contenido} ($\uparrow$): similitud coseno
+        $x_{\text{src}}\!\leftrightarrow\!\hat{x}$ \emph{en lo no editado}.
+        En su variante por \textit{stems} promedia la similitud sólo sobre las
+        capas que la operación no debía alterar.
+  \item \textbf{Éxito de operación} ($\uparrow$): fracción del cambio
+        $x_{\text{src}}\!\to\!x_{\text{tgt}}$ lograda por $\hat{x}$ sobre el
+        atributo objetivo (Ec.~\ref{eq:opsuccess}), recortada a $[0,1]$.
+  \item \textbf{Preferencia humana} ($\uparrow$): escucha controlada tipo
+        \textit{MUSHRA}~\cite{series2014method}; juez externo, no automatizable.
+\end{itemize}
+
+El éxito de operación se define como
+\begin{equation}
+  s \;=\; \mathrm{clip}\!\left(
+  \frac{a(\hat{x}) - a(x_{\text{src}})}{a(x_{\text{tgt}}) - a(x_{\text{src}})},
+  \;0,\;1\right),
+  \label{eq:opsuccess}
+\end{equation}
+donde $a(\cdot)$ mide el atributo objetivo de la operación (energía de batería
+para \textit{``añade batería''}, probabilidad de voz para \textit{``quita la
+voz''}, etc.). La reconstrucción sin edición da $s=0$ (no avanza hacia el
+objetivo) y una salida igual al objetivo da $s=1$.
+
+\begin{table}[t]
+  \caption{Métricas del benchmark de edición y su dirección}
+  \label{tab:edit-metricas}
+  \centering
+  \begin{tabular}{lcl}
+    \hline
+    \textbf{Métrica} & \textbf{Dir.} & \textbf{Compara contra} \\
+    \hline
+    FAD$\to$objetivo        & $\downarrow$ & objetivo \\
+    CLAP-instrucción        & $\uparrow$   & instrucción \\
+    Preservación            & $\uparrow$   & fuente (no editado) \\
+    Éxito de operación      & $\uparrow$   & fuente $\to$ objetivo \\
+    Preferencia humana      & $\uparrow$   & juez humano \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Lectura conjunta}
+\label{sec:edit:lectura}
+
+Las métricas se interpretan en conjunto porque exponen una tensión que la
+generación libre oculta: la reconstrucción maximiza la preservación pero
+fracasa en el éxito de operación, mientras que un modelo sólo-texto puede
+puntuar alto en CLAP-instrucción a costa de no preservar la fuente. Un editor
+competente debe equilibrar \emph{preservar lo no editado} y \emph{aplicar la
+operación}, acercándose al objetivo (FAD bajo) sin sacrificar la identidad de
+la pista. El ranking global promedia los rangos de las cuatro métricas
+automáticas; la preferencia humana se reporta por separado.
+
+% ============================================================
+%  Implementación: hybrid_music_engine/new_metrics/edit_benchmark.py
+%  (reutiliza frechet_distance/compute_statistics de fad_score y
+%   cosine_similarity de clap_score; sin reimplementar la matemática)
+% ============================================================

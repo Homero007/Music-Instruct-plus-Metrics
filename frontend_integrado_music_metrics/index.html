@@ -1,0 +1,550 @@
+<!doctype html>
+<html lang="es" data-frontend="integrado">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Motor de transformación musical | Frontend integrado</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell" id="motor">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">Motor musical</p>
+          <h1>Motor de transformación musical</h1>
+          <p class="lead">
+            Ciclo completo para convertir audio en clips, stems, MIDI, tokens, modelo generativo
+            y audio final escuchable.
+          </p>
+        </div>
+        <div class="api-card" id="apiStatus">
+          <span>Backend</span>
+          <strong>Verificando...</strong>
+          <small>http://127.0.0.1:8100</small>
+        </div>
+      </header>
+
+
+      <nav class="main-menu" aria-label="Menú principal integrado">
+        <a href="#motor">Motor musical</a>
+        <a href="#demo">Demo técnico</a>
+        <a href="#graficas">Gráficas</a>
+        <a href="#audios">Audios</a>
+        <a href="#documentacion">Documentación</a>
+      </nav>
+
+      <!-- Submenú integrado: acceso al demo técnico -->
+      <section class="demo-access-banner" id="demo" aria-labelledby="demo-title">
+        <div class="demo-content">
+          <span class="demo-label">Demostración interactiva</span>
+          <strong id="demo-title">Comparativa Técnica de Generación Musical</strong>
+          <p>Explora ejemplos de música generada en diferentes géneros con análisis de métricas.</p>
+          <button class="demo-button" id="openDemoButton" type="button">Ver Demostración</button>
+        </div>
+      </section>
+
+      <section class="notice" id="nextStep">
+        <span>Siguiente paso</span>
+        <strong>Conecta el backend y crea un proyecto.</strong>
+        <p>La guía se ajusta según el avance real del ciclo.</p>
+      </section>
+
+      <section class="guide-panel">
+        <div>
+          <span class="guide-label">Ciclo principal</span>
+          <strong>Todo lo que aparece abajo alimenta el siguiente paso.</strong>
+          <p>
+            No hay herramientas aisladas: los datos se preparan, se transforman a tokens, entrenan
+            un modelo, generan nuevas versiones y vuelven a audio para escuchar y comparar.
+          </p>
+        </div>
+        <ol>
+          <li><b>Audio</b><span>Seleccionar pistas y crear clips.</span></li>
+          <li><b>Representación</b><span>Stems, MIDI, features y tokens.</span></li>
+          <li><b>Modelo</b><span>Entrenar con los tokens válidos.</span></li>
+          <li><b>Generación</b><span>Crear varias versiones nuevas.</span></li>
+          <li><b>Audio final</b><span>Renderizar, escuchar y descargar.</span></li>
+          <li><b>Exportación</b><span>Descargar tokens de entrada o salida.</span></li>
+        </ol>
+      </section>
+
+
+
+      <section class="integration-hub" aria-labelledby="integration-title">
+        <div class="integration-copy">
+          <span class="guide-label">Frontend unificado</span>
+          <h2 id="integration-title">Gráficas, audios y documentación conviven en una sola página</h2>
+          <p>
+            Esta capa une el flujo principal del motor musical con el menú de demostración y con áreas
+            preparadas para visualizar métricas, escuchar resultados y consultar la metodología técnica
+            sin cambiar de carpeta ni abrir páginas aisladas.
+          </p>
+        </div>
+        <div class="integration-grid">
+          <article class="integration-card" id="graficas">
+            <span>Gráficas</span>
+            <strong>Métricas del modelo</strong>
+            <p>Consulta FAD, CLAP, BLEU2 y BLEU4 desde el demo, y utiliza esta zona como punto de expansión para Chart.js o Recharts.</p>
+            <button class="secondary-button" id="openDemoFromCharts" type="button">Ver métricas del demo</button>
+          </article>
+          <article class="integration-card" id="audios">
+            <span>Audios</span>
+            <strong>Reproducción y descargas</strong>
+            <p>Los reproductores generados por el ciclo aparecen en la sección final del motor, junto con rankings y archivos WAV/MP3.</p>
+            <a class="card-link" href="#audioPlayers">Ir a reproductores</a>
+          </article>
+          <article class="integration-card" id="documentacion">
+            <span>Documentación</span>
+            <strong>Metodología y flujo</strong>
+            <p>El glosario, la metodología de seis fases y la guía del ciclo quedan accesibles desde el mismo punto de entrada.</p>
+            <a class="card-link" href="#tab-methodology" data-demo-tab-link="methodology">Abrir metodología</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="layout" aria-label="Flujo operativo del motor musical">
+        <aside class="sidebar">
+          <section class="panel">
+            <div class="panel-heading">
+              <span>Proyecto activo</span>
+              <button class="quiet-button" id="refreshButton" type="button">Actualizar</button>
+            </div>
+            <label class="field">
+              <span>Seleccionar proyecto</span>
+              <select id="projectSelect"></select>
+              <small>El proyecto agrupa el ciclo: audio, stems, MIDI, tokens, modelo y resultados.</small>
+            </label>
+            <div class="split-row">
+              <label class="field">
+                <span>Nuevo proyecto</span>
+                <input id="projectName" placeholder="Ej. cancion-demo" />
+              </label>
+              <button class="primary-button" id="createProjectButton" type="button">Crear</button>
+            </div>
+            <dl class="project-meta" id="projectMeta"></dl>
+          </section>
+
+          <section class="panel">
+            <div class="panel-heading">
+              <span>Actividad actual</span>
+              <strong id="jobStatus">En espera</strong>
+            </div>
+            <div class="progress-track">
+              <div id="jobProgress"></div>
+            </div>
+            <p id="jobMessage" class="muted">No hay jobs activos.</p>
+            <ol id="jobEvents" class="timeline"></ol>
+          </section>
+        </aside>
+
+        <section class="main-flow">
+          <section class="steps" id="steps"></section>
+
+          <article class="step cycle-output-step">
+            <div>
+              <div class="step-header">
+                <span class="step-number">Cierre del ciclo</span>
+                <h2>Escuchar y descargar resultados</h2>
+                <p>
+                  Esta parte usa la música generada: la renderiza a WAV/MP3, muestra el ranking,
+                  permite descargar archivos y comparar versiones.
+                </p>
+              </div>
+
+              <div class="inline-fields">
+                <label class="field">
+                  <span>MIDI generado</span>
+                  <select id="generationSelect"></select>
+                  <small>Salida MIDI creada por el modelo generativo en el paso anterior.</small>
+                </label>
+                <label class="field">
+                  <span>Motor de audio</span>
+                  <select id="renderEngine">
+                    <option value="auto">auto</option>
+                    <option value="pedalboard">pedalboard</option>
+                    <option value="fluidsynth">fluidsynth</option>
+                    <option value="preview">preview</option>
+                  </select>
+                  <small>Pedalboard renderiza con SoundFont y luego aplica cadena de efectos/master.</small>
+                </label>
+                <label class="field">
+                  <span>SoundFont</span>
+                  <input id="renderSoundfont" placeholder="assets/soundfonts/default.sf2" />
+                  <small>Vacío usa el SoundFont por defecto del proyecto.</small>
+                </label>
+                <label class="field">
+                  <span>Nombre del render</span>
+                  <input id="renderName" value="render_track" />
+                  <small>Nombre base para los archivos WAV/MP3.</small>
+                </label>
+                <label class="field">
+                  <span>Preset Pedalboard</span>
+                  <select id="pedalboardPreset">
+                    <option value="master">master</option>
+                    <option value="clean">clean</option>
+                    <option value="warm">warm</option>
+                    <option value="punchy">punchy</option>
+                    <option value="bright">bright</option>
+                    <option value="streaming">streaming</option>
+                    <option value="none">none</option>
+                  </select>
+                  <small>Cadena de efectos aplicada cuando usas motor pedalboard.</small>
+                </label>
+                <label class="field">
+                  <span>Plugins de efecto</span>
+                  <input id="pedalboardPlugins" placeholder="/ruta/plugin.vst3,/ruta/plugin.component" />
+                  <small>Opcional. Plugins VST3/AU de efecto, separados por comas.</small>
+                </label>
+              </div>
+              <div class="checkbox-row">
+                <label><input id="renderMp3" type="checkbox" checked /> crear MP3 además de WAV</label>
+              </div>
+              <div class="action-row">
+                <button class="primary-button" id="renderMidiButton" type="button">Renderizar audio</button>
+                <button class="secondary-button" id="renderLayersButton" type="button">Renderizar capas</button>
+                <button class="secondary-button" id="analyzeMidiButton" type="button">Analizar MIDI</button>
+              </div>
+
+              <div id="rankingList" class="ranking-list"></div>
+              <div id="downloadList" class="download-list"></div>
+              <div id="audioPlayers" class="audio-players"></div>
+
+              <details class="advanced">
+                <summary>Fusión latente</summary>
+                <div class="inline-fields">
+                  <label class="field">
+                    <span>Embedding A</span>
+                    <select id="embeddingAPath"></select>
+                    <small>Primer vector latente. Elige un embedding o una fusión existente.</small>
+                  </label>
+                  <label class="field">
+                    <span>Embedding B</span>
+                    <select id="embeddingBPath"></select>
+                    <small>Segundo vector latente. Debe tener la misma dimensión que A.</small>
+                  </label>
+                  <label class="field">
+                    <span>Alpha</span>
+                    <input id="blendAlpha" type="number" value="0.5" min="0" max="1" step="0.05" />
+                    <small>1.0 favorece A; 0.0 favorece B.</small>
+                  </label>
+                  <label class="field">
+                    <span>Nombre</span>
+                    <input id="blendName" value="latent_blend" />
+                    <small>Nombre del archivo de mezcla latente.</small>
+                  </label>
+                </div>
+                <div class="action-row">
+                  <button class="secondary-button" id="blendEmbeddingsButton" type="button">
+                    Fusionar embeddings
+                  </button>
+                </div>
+              </details>
+            </div>
+          </article>
+
+          <section class="panel token-export-panel">
+            <div class="panel-heading">
+              <span>Exportar tokens</span>
+              <strong>Entrada y salida en ZIP</strong>
+            </div>
+            <p class="muted">
+              Usa esta sección cuando quieras descargar los tokens ya transformados. Los tokens de entrada
+              vienen del procesamiento del dataset; los tokens de salida vienen de una generación concreta.
+            </p>
+            <div class="inline-fields">
+              <label class="field">
+                <span>Tokens de entrada</span>
+                <select id="exportInputTokenSelect"></select>
+                <small>Elige el manifest de entrenamiento que quieres exportar por género.</small>
+              </label>
+              <label class="field">
+                <span>Tokens de salida</span>
+                <select id="exportOutputTokenSelect"></select>
+                <small>Elige la generación cuyos tokens/MIDI quieres empaquetar.</small>
+              </label>
+            </div>
+            <div class="action-row">
+              <button class="secondary-button" id="exportInputTokensButton" type="button">
+                Exportar tokens de entrada ZIP
+              </button>
+              <button class="secondary-button" id="exportOutputTokensButton" type="button">
+                Exportar tokens de salida ZIP
+              </button>
+            </div>
+          </section>
+
+          <section class="panel glossary">
+            <div class="panel-heading">
+              <span>Glosario del ciclo</span>
+              <strong>Qué produce cada etapa</strong>
+            </div>
+            <div class="glossary-grid">
+              <div><b>Clip</b><p>Fragmento corto de audio usado como ejemplo de entrenamiento.</p></div>
+              <div><b>Stem</b><p>Capa separada del audio original: batería, bajo, voz u otros.</p></div>
+              <div><b>MIDI por capas</b><p>Notas editables separadas por función musical.</p></div>
+              <div><b>Token</b><p>Evento musical que el modelo puede aprender y volver a generar.</p></div>
+              <div><b>Modelo</b><p>Archivo entrenado con tokens para generar nueva música.</p></div>
+              <div><b>Render</b><p>Conversión del MIDI final a WAV/MP3 para escucharlo.</p></div>
+              <div><b>Ranking</b><p>Comparación de varias versiones generadas.</p></div>
+              <div><b>Embedding</b><p>Vector musical que permite fusionar o condicionar resultados.</p></div>
+              <div><b>Exportación</b><p>Descarga organizada de tokens de entrada o de salida.</p></div>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <!-- NUEVO: Modal de demostración -->
+    <div id="demoModal" class="demo-modal" hidden>
+      <div class="demo-modal-overlay" id="demoModalOverlay"></div>
+      <div class="demo-modal-content">
+        <div class="demo-modal-header">
+          <h2>Comparativa Técnica de Generación Musical</h2>
+          <button class="demo-close-button" id="closeDemoButton" type="button" aria-label="Cerrar">✕</button>
+        </div>
+        <div class="demo-modal-body">
+          <div class="demo-tabs">
+            <button class="demo-tab-button active" data-tab="overview" type="button">Resumen</button>
+            <button class="demo-tab-button" data-tab="classical" type="button">Música Clásica</button>
+            <button class="demo-tab-button" data-tab="reggae" type="button">Reggae</button>
+            <button class="demo-tab-button" data-tab="methodology" type="button">Metodología</button>
+          </div>
+
+          <!-- Tab: Overview -->
+          <div class="demo-tab-content active" id="tab-overview">
+            <div class="demo-section">
+              <h3>Proyecto de Investigación</h3>
+              <p>
+                Este proyecto propone una <strong>comparativa técnica y estructural de modelos generativos</strong> 
+                diseñados para la creación de melodías musicales coherentes y perceptualmente consistentes a partir 
+                de descripciones textuales.
+              </p>
+              <div class="demo-stats">
+                <div class="demo-stat">
+                  <span class="demo-stat-label">Institución</span>
+                  <strong>Instituto Politécnico Nacional</strong>
+                </div>
+                <div class="demo-stat">
+                  <span class="demo-stat-label">Carrera</span>
+                  <strong>Ingeniería en Inteligencia Artificial</strong>
+                </div>
+                <div class="demo-stat">
+                  <span class="demo-stat-label">Géneros Demostrados</span>
+                  <strong>Clásica, Reggae</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="demo-section">
+              <h3>Objetivos Principales</h3>
+              <ul class="demo-list">
+                <li><strong>Comparativa de Arquitecturas:</strong> Análisis estructural de modelos generativos musicales</li>
+                <li><strong>Optimización con Monte Carlo:</strong> Integración de métodos probabilísticos</li>
+                <li><strong>Validación Experta:</strong> Evaluación con músicos profesionales</li>
+                <li><strong>Innovación en Métricas:</strong> Propuesta de evaluación en doble paso</li>
+              </ul>
+            </div>
+
+            <div class="demo-section">
+              <h3>Acceso a Recursos</h3>
+              <div class="demo-links">
+                <a href="https://github.com/Homero007/Trabajo-Terminal" target="_blank" class="demo-link">
+Repositorio GitHub
+                </a>
+                <a href="https://musiclm.com/" target="_blank" class="demo-link">
+MusicLM - Google Research
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Música Clásica -->
+          <div class="demo-tab-content" id="tab-classical">
+            <div class="demo-section">
+              <h3>Música Clásica Generada</h3>
+              <p>
+                Composición clásica generada a partir de la descripción: 
+                <em>"Sinfonía elegante en tonalidad menor con violines prominentes y progresiones armónicas complejas"</em>
+              </p>
+
+              <div class="demo-metrics-grid">
+                <div class="demo-metric">
+                  <span class="demo-metric-label">FAD</span>
+                  <div class="demo-metric-bar">
+                    <div class="demo-metric-fill" style="width: 78.5%"></div>
+                  </div>
+                  <strong>78.50 / 100</strong>
+                  <small>Similitud con música real</small>
+                </div>
+                <div class="demo-metric">
+                  <span class="demo-metric-label">CLAP</span>
+                  <div class="demo-metric-bar">
+                    <div class="demo-metric-fill" style="width: 82.3%"></div>
+                  </div>
+                  <strong>82.30 / 100</strong>
+                  <small>Coherencia texto-audio</small>
+                </div>
+                <div class="demo-metric">
+                  <span class="demo-metric-label">BLEU2</span>
+                  <div class="demo-metric-bar">
+                    <div class="demo-metric-fill" style="width: 85%"></div>
+                  </div>
+                  <strong>0.85</strong>
+                  <small>Similitud de 2-gramas</small>
+                </div>
+                <div class="demo-metric">
+                  <span class="demo-metric-label">BLEU4</span>
+                  <div class="demo-metric-bar">
+                    <div class="demo-metric-fill" style="width: 72%"></div>
+                  </div>
+                  <strong>0.72</strong>
+                  <small>Similitud de 4-gramas</small>
+                </div>
+              </div>
+
+              <div class="demo-section-note">
+                <strong>Análisis:</strong> Las métricas muestran una alta coherencia entre la descripción textual 
+                y la música generada, con buena similitud con composiciones clásicas reales.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Reggae -->
+          <div class="demo-tab-content" id="tab-reggae">
+            <div class="demo-section">
+              <h3>Reggae Generado</h3>
+              <p>
+                Pista de reggae generada a partir de la descripción: 
+                <em>"Ritmo reggae relajante con bajos prominentes, ritmo de ska y vibraciones positivas"</em>
+              </p>
+
+              <div class="demo-metrics-grid">
+                <div class="demo-metric">
+                  <span class="demo-metric-label">FAD</span>
+                  <div class="demo-metric-bar">
+                    <div class="demo-metric-fill" style="width: 75.2%"></div>
+                  </div>
+                  <strong>75.20 / 100</strong>
+                  <small>Similitud con música real</small>
+                </div>
+                <div class="demo-metric">
+                  <span class="demo-metric-label">CLAP</span>
+                  <div class="demo-metric-bar">
+                    <div class="demo-metric-fill" style="width: 79.8%"></div>
+                  </div>
+                  <strong>79.80 / 100</strong>
+                  <small>Coherencia texto-audio</small>
+                </div>
+                <div class="demo-metric">
+                  <span class="demo-metric-label">BLEU2</span>
+                  <div class="demo-metric-bar">
+                    <div class="demo-metric-fill" style="width: 81%"></div>
+                  </div>
+                  <strong>0.81</strong>
+                  <small>Similitud de 2-gramas</small>
+                </div>
+                <div class="demo-metric">
+                  <span class="demo-metric-label">BLEU4</span>
+                  <div class="demo-metric-bar">
+                    <div class="demo-metric-fill" style="width: 68%"></div>
+                  </div>
+                  <strong>0.68</strong>
+                  <small>Similitud de 4-gramas</small>
+                </div>
+              </div>
+
+              <div class="demo-section-note">
+                <strong>Análisis:</strong> El modelo mantiene bien las características rítmicas del reggae, 
+                con métricas sólidas que demuestran la captura de la lógica estética del género.
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Metodología -->
+          <div class="demo-tab-content" id="tab-methodology">
+            <div class="demo-section">
+              <h3>Metodología en 6 Fases</h3>
+              <div class="demo-methodology-steps">
+                <div class="demo-step">
+                  <div class="demo-step-number">1</div>
+                  <div class="demo-step-content">
+                    <strong>Comparativa de Arquitecturas</strong>
+                    <p>Análisis estructural de modelos generativos musicales existentes</p>
+                  </div>
+                </div>
+                <div class="demo-step">
+                  <div class="demo-step-number">2</div>
+                  <div class="demo-step-content">
+                    <strong>Manejo de Conjunto de Datos</strong>
+                    <p>Preparación de datos multimodales (audio, texto, metadatos)</p>
+                  </div>
+                </div>
+                <div class="demo-step">
+                  <div class="demo-step-number">3</div>
+                  <div class="demo-step-content">
+                    <strong>Análisis Base de Datos</strong>
+                    <p>Exploración estadística de características musicales</p>
+                  </div>
+                </div>
+                <div class="demo-step">
+                  <div class="demo-step-number">4</div>
+                  <div class="demo-step-content">
+                    <strong>SeqGAN y Monte Carlo</strong>
+                    <p>Implementación con optimización probabilística</p>
+                  </div>
+                </div>
+                <div class="demo-step">
+                  <div class="demo-step-number">5</div>
+                  <div class="demo-step-content">
+                    <strong>Ajuste Fino y LoRA</strong>
+                    <p>Fine-tuning eficiente para géneros específicos</p>
+                  </div>
+                </div>
+                <div class="demo-step">
+                  <div class="demo-step-number">6</div>
+                  <div class="demo-step-content">
+                    <strong>Innovación en Métricas</strong>
+                    <p>Propuesta de evaluación en doble paso</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="demo-section">
+              <h3>Resultados Esperados</h3>
+              <table class="demo-table">
+                <thead>
+                  <tr>
+                    <th>Métrica</th>
+                    <th>Mejora Esperada</th>
+                    <th>Impacto</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>BLEU2</td>
+                    <td>+0.100</td>
+                    <td>Mejora en similitud de 2-gramas</td>
+                  </tr>
+                  <tr>
+                    <td>BLEU4</td>
+                    <td>+0.040</td>
+                    <td>Mejora en similitud de 4-gramas</td>
+                  </tr>
+                  <tr>
+                    <td>Validación</td>
+                    <td>Experta</td>
+                    <td>Múltiples orígenes culturales</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="./app.js"></script>
+    <script type="module" src="./demo.js"></script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "stage": "new_metrics",
+  "created_at": "2026-06-15T16:43:36",
+  "generated_root": "/Users/homer/Downloads/hybrid_engine/data/renders/20260615-164334-ranked-evaluation_batch_electronic_040-746e2782",
+  "real_root": null,
+  "out_dir": "/Users/homer/Downloads/hybrid_engine/data/new_metrics/20260615-164334-ranked-evaluation_batch_electronic_040-746e2782",
+  "plots": [],
+  "audio": {
+    "error": "Cannot create a GUI FigureManager outside the main thread using the MacOS backend. Use a non-interactive backend like 'agg' to make plots on worker threads."
+  },
+  "tsne": {},
+  "kld": {},
+  "kad": {},
+  "note": "Etapa independiente del reward model; salida orientada a gráficos."
+}

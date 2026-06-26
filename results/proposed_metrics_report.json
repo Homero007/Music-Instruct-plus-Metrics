@@ -1,0 +1,20 @@
+{
+  "source_set_csv": "/Users/homer/Downloads/hybrid_engine/results/set_level_metrics.csv",
+  "source_clip_csv": "/Users/homer/Downloads/hybrid_engine/results/clip_level_metrics.csv",
+  "run_name": "mi_entrenamiento_200ep",
+  "training_csv": "/Users/homer/Downloads/hybrid_engine/results/mi_entrenamiento_200ep/training_metrics.csv",
+  "training_summary": "/Users/homer/Downloads/hybrid_engine/results/mi_entrenamiento_200ep/summary.json",
+  "testset_csv": "/Users/homer/Downloads/hybrid_engine/testset_metadata.csv",
+  "commands": {
+    "train": "python train_colab.py --epochs 200 --batch-size 8 --save-every 10 --checkpoint-dir results/mi_entrenamiento_200ep/checkpoints --results-dir results/mi_entrenamiento_200ep",
+    "test_report": "python scripts/export_proposed_metrics_report.py --run-name mi_entrenamiento_200ep --training-csv results/mi_entrenamiento_200ep/training_metrics.csv --out results/proposed_metrics_report.csv"
+  },
+  "metric_definitions": {
+    "fad_vggish": "Frechet Audio Distance con extractor VGGish; menor es mejor.",
+    "fad_pann": "Frechet Audio Distance con extractor PANN; menor es mejor.",
+    "clap_score_mean": "Media de similitud texto-audio CLAP por modelo; mayor es mejor.",
+    "compliance_rate_clap_gt_025": "Tasa de clips con CLAP-score > 0.25.",
+    "ternas_evaluated": "Número de ternas/filas clip-level evaluadas por modelo.",
+    "split": "train registra la corrida de entrenamiento; test registra métricas propuestas por modelo."
+  }
+}

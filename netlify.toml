@@ -1,0 +1,28 @@
+# Despliegue del frontend estático en Netlify.
+# Deploy por arrastrar-y-soltar: arrastra la carpeta `frontend/` a https://app.netlify.com/drop
+# Deploy por Git: conecta el repo; Netlify usará esta config.
+[build]
+  publish = "frontend"
+  command = ""
+
+# ── Proxy del backend (resolución automática del API) ────────────────────────
+# El frontend desplegado llama a su propio origen (/api/...) y Netlify reenvía
+# la petición al backend real. Así NO hay que escribir la URL del backend en la
+# UI, y se evita CORS y el bloqueo de contenido mixto (Netlify llama al backend
+# desde su servidor, no desde el navegador).
+#
+# Cambia BACKEND_URL por tu backend público (p. ej. el túnel de Colab
+# https://xxxx.trycloudflare.com) y vuelve a desplegar. Debe ser accesible
+# desde internet: 127.0.0.1 NO sirve aquí porque el proxy corre en Netlify.
+[[redirects]]
+  from = "/api/*"
+  to = "https://BACKEND_URL/api/:splat"
+  status = 200
+  force = true
+
+# Cabeceras básicas (el frontend es 100% estático: HTML/CSS/JS).
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

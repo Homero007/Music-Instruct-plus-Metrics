@@ -1,0 +1,7 @@
+id,action,target,replacement,keep,instruction
+e01,add,a piano solo,,,
+e02,remove,the drums,,the bassline,
+e03,replace,the lead synth,an electric guitar,,
+e04,restyle,classical,,,
+e05,,,,,"Add a warm string section under the chorus"
+e06,extract,the vocals,,,

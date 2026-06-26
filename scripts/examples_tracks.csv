@@ -1,0 +1,5 @@
+id,genre,instruments,tempo_bpm,key,mood,style,energy
+jazz_001,Jazz Latino,"Trompeta, Congas, Piano, Contrabajo",120,F minor,"warm, lively",syncopated live,medium
+techno_014,Techno,"kick, hi-hats, acid bass, pads",130,A minor,hypnotic,Detroit driving,high
+class_007,Classical,"piano, violin, cello, flute",72,D major,"serene, expressive",romantic chamber,low
+reggaeton_22,Reggaeton,"dembow drums, 808 bass, synth lead, vocal chops",95,G minor,danceable,latin urban,high

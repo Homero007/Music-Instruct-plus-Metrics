@@ -1,0 +1,4 @@
+evaluation_id,evaluation_dir,pairs_total,pairs_valid,compliance_rate,fad_mel,clap_score,clap_status,kld,kad,valid_midi_rate,generated_audio,generated_midis,error_count
+20260615-164146-evaluation-evaluation_batch-0b9ce5eb,/Users/homer/Downloads/hybrid_engine/data/evaluations/20260615-164146-evaluation-evaluation_batch-0b9ce5eb,100,100,1.000000,73616.792776,,missing_dependency:laion-clap,0.363608,1.329547,1.000000,200,500,0
+20260615-210840-evaluation-resultados_generados-daebc03e,/Users/homer/Downloads/hybrid_engine/data/evaluations/20260615-210840-evaluation-resultados_generados-daebc03e,45,45,1.000000,72643.402775,,missing_dependency:laion-clap,0.705621,,1.000000,90,45,1
+20260617-114812-evaluation-resultados_generados-e632b193,/Users/homer/Downloads/hybrid_engine/data/evaluations/20260617-114812-evaluation-resultados_generados-e632b193,45,45,1.000000,72643.402775,,missing_dependency:laion-clap,0.705621,,1.000000,90,45,1

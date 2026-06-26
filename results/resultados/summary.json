@@ -1,0 +1,9 @@
+{
+  "total_epochs": 200,
+  "final_loss": 7.637876804058369,
+  "best_loss": 7.6350836387047405,
+  "total_parameters": 2137600,
+  "training_time_minutes": 0.8924592166666667,
+  "training_metrics_csv": "results/real_200ep_20260625-143043/training_metrics.csv",
+  "timestamp": "2026-06-25T14:31:38.247008"
+}

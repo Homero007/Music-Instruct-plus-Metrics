@@ -1,0 +1,100 @@
+% ============================================================
+%  Para insertar en el Capítulo 5 (Resultados), tras 5.1.
+%  Reporta el BANCO DE EDICIÓN realmente construido y el
+%  benchmark de edición con anclas. Números verificados sobre
+%  edit_triplets_moisesdb/ (generado con scripts/build_edit_triplets.py).
+% ============================================================
+
+\section{Banco de edición construido y evaluación con anclas}
+\label{sec:res:edicion}
+
+A diferencia de la prueba de entrenamiento por épocas (Sección~\ref{sec:res:proto}),
+que es preliminar, el \textbf{banco de ternas de edición sí quedó construido y
+verificado} sobre datos reales. Esta sección reporta su composición y la
+evaluación de las cinco métricas con dos anclas.
+
+\subsection{Composición del banco}
+\label{sec:res:edicion:banco}
+
+El generador \texttt{scripts/build\_edit\_triplets.py} produjo, a partir de
+\textbf{MoisesDB} (\textit{stems} reales) con muestreo por energía de la ventana
+de 10\,s, un banco de \textbf{674 ternas} provenientes de las
+\textbf{240/240 pistas} del dataset (ninguna pista se perdió). El muestreo por
+energía fue determinante: frente a tomar los primeros 10\,s, que caen a menudo en
+intros dispersos, recuperó 65 pistas y elevó el banco de 313 a 674 ternas.
+La Tabla~\ref{tab:res-banco} resume la composición; el 100\,\% de las ternas usa
+\textit{stems} reales (columna \texttt{stems\_origin}=\texttt{real}).
+
+\begin{table}[t]
+  \caption{Composición del banco de edición construido (MoisesDB, \textit{stems} reales).}
+  \label{tab:res-banco}
+  \centering
+  \begin{tabular}{lrr}
+    \hline
+    \textbf{Operación} & \textbf{Ternas} & \textbf{Reducción RMS (mediana)} \\
+    \hline
+    remove\_drums  & 223 & 14\,\% \\
+    remove\_vocals & 215 & 16\,\% \\
+    isolate\_bass  & 236 & 52\,\% \\
+    \hline
+    \textbf{Total} & \textbf{674} & --- \\
+    \hline
+  \end{tabular}
+  \smallskip\\
+  \footnotesize{240/240 pistas · \texttt{stems\_origin}=real (100\,\%) ·
+  géneros reales (rock, singer-songwriter, pop, rap, electronic, …).}
+\end{table}
+
+\paragraph{Integridad y control de calidad.} La revisión del manifest confirma:
+IDs únicos, \textbf{0} rutas de audio faltantes (674 fuentes/objetivos en disco),
+\textbf{0} valores vacíos, \textbf{0/674} violaciones de dirección del atributo
+(todos los objetivos bajan el RMS como documenta \texttt{attr\_direction}) y
+\textbf{0} objetivos en silencio. El criterio de exclusión de operaciones vacuas
+(capa objetivo con energía despreciable en la ventana) descartó automáticamente
+los casos no aplicables. Una validación de audio sobre una terna \texttt{remove\_drums}
+arroja correlación fuente--objetivo de \textbf{0.83}: alta (preserva el resto) pero
+inferior a 1 (la batería sí se removió), que es la firma esperada de una edición
+correcta.
+
+\subsection{Evaluación de edición acotada por anclas}
+\label{sec:res:edicion:anclas}
+
+El CLI \texttt{scripts/run\_edit\_benchmark.py} calcula las cinco métricas sobre
+el banco. Para que la tabla sea interpretable sin depender todavía de un editor
+entrenado, se reportan dos \textbf{anclas} que acotan el rango de cada métrica:
+\textit{reconstrucción} (salida = fuente; cota inferior, no edita) y
+\textit{oráculo} (salida = objetivo; cota superior, edición perfecta). Un editor
+real cae entre ambas filas (Tabla~\ref{tab:res-anclas}).
+
+\begin{table}[t]
+  \caption{Benchmark de edición acotado por anclas (674 ternas, \textit{stems} reales).}
+  \label{tab:res-anclas}
+  \centering
+  \begin{tabular}{lcccc}
+    \hline
+    \textbf{Modelo} & \textbf{FAD$\to$obj $\downarrow$} & \textbf{Preserv. $\uparrow$} & \textbf{Éxito op. $\uparrow$} \\
+    \hline
+    Oráculo (cota superior)       & $\approx 0$ & 0.969 & \textbf{0.999} \\
+    Reconstrucción (cota inferior) & 20421 & \textbf{1.000} & 0.001 \\
+    \hline
+  \end{tabular}
+  \smallskip\\
+  \footnotesize{El oráculo opera (0.999) y está a distancia nula del objetivo, pero
+  no preserva al 100\,\% porque editar cambia la fuente; la reconstrucción preserva
+  (1.000) pero no opera (0.001). CLAP-instrucción requiere \texttt{laion-clap}
+  (opcional) y se omite aquí. El FAD del oráculo es numéricamente $\approx 0$
+  (residual de \texttt{sqrtm}).}
+\end{table}
+
+Esta lectura conjunta expone la tensión central de la edición que la generación
+libre oculta: preservar lo no editado y aplicar la operación son objetivos en
+competencia. El pipeline completo (banco con \textit{stems} reales $\to$ cinco
+métricas $\to$ tabla acotada) queda así \textbf{operativo y verificado}, con la
+conexión de un editor real (text-only, audio-prompt sin fusión, Instruct-MusicGen)
+como el experimento pendiente, no como un requisito del benchmark.
+
+\paragraph{Reproducibilidad.} El pipeline de edición/evaluación está cubierto por
+\textbf{70 pruebas unitarias} (\texttt{tests/test\_edit\_benchmark.py},
+\texttt{test\_build\_edit\_triplets.py}, \texttt{test\_moisesdb.py},
+\texttt{test\_run\_edit\_benchmark.py}, además del modelo, las métricas de
+generación, la generación de los 4 modelos y los endpoints del backend).

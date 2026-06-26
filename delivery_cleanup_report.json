@@ -1,0 +1,13 @@
+{
+  "created_at": "2026-05-24T07:42:11",
+  "keep_per_genre": 150,
+  "selected_counts": {
+    "classical": 150,
+    "electronic": 150,
+    "reggaeton": 150
+  },
+  "selected_audio_size_bytes": 4441015390,
+  "removed_bytes_estimate": 20177291861,
+  "output_dataset": "data/datasets/jamendo/delivery_jamendo_150",
+  "catalog_path": "data/datasets/jamendo/delivery_jamendo_150/catalog.json"
+}
